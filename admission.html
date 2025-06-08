@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admissions | The Climax Brains Academy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ==== Base Styles (Consistent with Homepage) ==== */
+    :root {
+      --primary: #4a6bff;
+      --secondary: #ff6b6b;
+      --dark: #1a1a2e;
+      --light: #f8f9fa;
+      --accent: #06d6a0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--light);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ==== Reused Components (Same as Homepage) ==== */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      padding: 1rem 5%;
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .logo i {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .menu-toggle {
+      display: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #05b389;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(6, 214, 160, 0.3);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
+      text-align: center;
+    }
+
+    .section-subtitle {
+      color: var(--secondary);
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    /* ==== Admissions-Specific Styles ==== */
+    .admissions-hero {
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 5%;
+      background: linear-gradient(135deg, rgba(74, 107, 255, 0.2), rgba(255, 107, 107, 0.2)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center/cover;
+      margin-top: 80px;
+    }
+
+    .admissions-hero-content h1 {
+      font-size: 3rem;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      animation: fadeInUp 1s ease;
+    }
+
+    .admissions-hero-content p {
+      font-size: 1.2rem;
+      color: var(--dark);
+      margin-bottom: 2rem;
+      animation: fadeInUp 1.2s ease;
+    }
+
+    .admissions-container {
+      padding: 5rem 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .admissions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .admissions-card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .admissions-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .admissions-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .admissions-card h3 i {
+      color: var(--accent);
+    }
+
+    .requirements-list {
+      list-style-position: inside;
+      margin-bottom: 1.5rem;
+    }
+
+    .requirements-list li {
+      margin-bottom: 0.5rem;
+    }
+
+    .fee-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .fee-table th, .fee-table td {
+      padding: 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .fee-table th {
+      background-color: var(--light);
+      color: var(--dark);
+    }
+
+    .dates-list {
+      list-style: none;
+    }
+
+    .dates-list li {
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dates-list li:last-child {
+      border-bottom: none;
+    }
+
+    .date {
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    /* Application Form */
+    .application-form {
+      background-color: white;
+      padding: 3rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      margin-top: 3rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border 0.3s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* FAQ Section */
+    .faq-item {
+      margin-bottom: 1rem;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      padding: 1rem;
+      background-color: var(--light);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      padding: 0 1rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      padding: 1rem;
+      max-height: 500px;
+    }
+
+    /* Footer (Same as Homepage) */
+    .footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 3rem 5% 1rem;
+    }
+
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .admissions-hero {
+        height: 50vh;
+        margin-top: 70px;
+      }
+
+      .admissions-hero-content h1 {
+        font-size: 2.2rem;
+      }
+
+      .application-form {
+        padding: 2rem 1.5rem;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 80%;
+        height: calc(100vh - 80px);
+        background-color: white;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 0;
+        transition: all 0.3s ease;
+      }
+
+      .nav-links.active {
+        left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation (Same as Homepage) -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-graduation-cap"></i>
+      <span>The Climax Brains Academy</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#">About</a>
+      <a href="admissions.html" class="active">Admissions</a>
+      <a href="#">CBT</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+  </nav>
+
+  <!-- Admissions Hero Section -->
+  <section class="admissions-hero">
+    <div class="admissions-hero-content">
+      <h1>Begin Your Journey</h1>
+      <p>Join our community of learners and innovators</p>
+      <a href="#apply-now" class="btn btn-primary">Apply Now</a>
+    </div>
+  </section>
+
+  <!-- Admissions Main Content -->
+  <div class="admissions-container">
+    <h2 class="section-title">Admissions Process</h2>
+    <p class="section-subtitle">Your path to excellence starts here</p>
+
+    <div class="admissions-grid">
+      <!-- Requirements Card -->
+      <div class="admissions-card">
+        <h3><i class="fas fa-clipboard-check"></i> Requirements</h3>
+        <ul class="requirements-list">
+          <li>Completed application form</li>
+          <li>Previous school transcripts</li>
+          <li>Birth certificate</li>
+          <li>2 passport photographs</li>
+          <li>Medical report</li>
+          <li>Entrance exam (for certain grades)</li>
+        </ul>
+        <p>Additional documents may be required for international students.</p>
+      </div>
+
+      <!-- Fee Structure Card -->
+      <div class="admissions-card">
+        <h3><i class="fas fa-money-bill-wave"></i> Fee Structure</h3>
+        <table class="fee-table">
+          <thead>
+            <tr>
+              <th>Grade Level</th>
+              <th>Tuition</th>
+              <th>Total Fees</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Elementary</td>
+              <td>$1,200</td>
+              <td>$1,800</td>
+            </tr>
+            <tr>
+              <td>Middle School</td>
+              <td>$1,500</td>
+              <td>$2,200</td>
+            </tr>
+            <tr>
+              <td>High School</td>
+              <td>$1,800</td>
+              <td>$2,600</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 1rem;">* Fees are per term. Payment plans available.</p>
+      </div>
+
+      <!-- Important Dates Card -->
+      <div class="admissions-card">
+        <h3><i class="far fa-calendar-alt"></i> Important Dates</h3>
+        <ul class="dates-list">
+          <li>
+            <span>Application Deadline</span>
+            <span class="date">June 30, 2024</span>
+          </li>
+          <li>
+            <span>Entrance Exams</span>
+            <span class="date">July 15, 2024</span>
+          </li>
+          <li>
+            <span>Interviews</span>
+            <span class="date">July 22-26, 2024</span>
+          </li>
+          <li>
+            <span>First Day of School</span>
+            <span class="date">September 5, 2024</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Application Form -->
+    <div class="application-form" id="apply-now">
+      <h2 style="text-align: center; margin-bottom: 2rem;">Application Form</h2>
+      <form name="admission-form" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="admission-form">
+        <p class="hidden">
+          <label>Don't fill this out if you're human: <input name="bot-field"></label>
+        </p>
+
+        <div class="form-group">
+          <label>Applying for*</label>
+          <select class="form-control" name="grade-level" required>
+            <option value="">Select Grade Level</option>
+            <option value="elementary">Elementary School</option>
+            <option value="middle">Middle School</option>
+            <option value="high">High School</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name*</label>
+            <input type="text" class="form-control" name="first-name" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name*</label>
+            <input type="text" class="form-control" name="last-name" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Birth*</label>
+            <input type="date" class="form-control" name="dob" required>
+          </div>
+          <div class="form-group">
+            <label>Gender*</label>
+            <select class="form-control" name="gender" required>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address*</label>
+          <input type="email" class="form-control" name="email" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number*</label>
+            <input type="tel" class="form-control" name="phone" required>
+          </div>
+          <div class="form-group">
+            <label>Current School</label>
+            <input type="text" class="form-control" name="current-school">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Why do you want to join The Climax Brains Academy?*</label>
+          <textarea class="form-control" name="motivation" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>How did you hear about us?</label>
+          <select class="form-control" name="referral">
+            <option value="">Select Option</option>
+            <option value="friend">Friend/Family</option>
+            <option value="social">Social Media</option>
+            <option value="search">Search Engine</option>
+            <option value="event">School Event</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-top: 2rem;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+            Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- FAQ Section -->
+    <div style="margin-top: 5rem;">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>What is the admission process timeline?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>After submitting your application, you'll receive a confirmation email within 3 business days. Entrance exams (where applicable) are scheduled 2 weeks after application deadline. Admission decisions are typically made within 4 weeks of completing all requirements.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Do you offer financial aid or scholarships?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Yes, we offer merit-based scholarships and need-based financial aid. Please contact our admissions office for more information and application procedures.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Can international students apply?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Absolutely! We welcome applications from international students. Additional requirements include proof of English proficiency (for non-native speakers) and student visa documentation.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>What is the student-teacher ratio?</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>We maintain an average student-teacher ratio of 12:1, ensuring personalized attention for every student.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (Same as Homepage) -->
+  <footer class="footer">
+    <div class="footer-container">
+      <!-- School Info -->
+      <div class="footer-section">
+        <h3 class="footer-title">The Climax Brains Academy</h3>
+        <p>Empowering future leaders through excellence in education.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h3 class="footer-title">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="admissions.html">Admissions</a></li>
+          <li><a href="#">CBT Portal</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="footer-section">
+        <h3 class="footer-title">Contact Us</h3>
+        <ul class="contact-info">
+          <li><i class="fas fa-map-marker-alt"></i> 123 Education St, Knowledge City</li>
+          <li><i class="fas fa-phone"></i> +1 (234) 567-8900</li>
+          <li><i class="fas fa-envelope"></i> info@climaxbrains.edu</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright & Credits -->
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> The Climax Brains Academy. All Rights Reserved.</p>
+      <p>Powered by <a href="https://digskills.com" target="_blank">DigSkills</a></p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Reused JavaScript from Homepage
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    // Update copyright year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // FAQ Accordion
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+      question.addEventListener('click', () => {
+        const item = question.parentElement;
+        item.classList.toggle('active');
+        
+        // Close other open items
+        faqQuestions.forEach(q => {
+          if (q !== question && q.parentElement.classList.contains('active')) {
+            q.parentElement.classList.remove('active');
+          }
+        });
+      });
+    });
+
+    // Form submission handling
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+      // You can add form validation here
+      console.log('Form submitted!');
+      // In a real implementation, this would be handled by Netlify Forms
+    });
+  </script>
+</body>
+</html>
