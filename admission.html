@@ -26,6 +26,7 @@
       background-color: var(--light);
       color: var(--dark);
       overflow-x: hidden;
+      padding-top: 80px; /* Added to prevent content from being hidden under fixed navbar */
     }
 
     /* ==== Reused Components (Same as Homepage) ==== */
@@ -38,6 +39,7 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       position: fixed;
       width: 100%;
+      top: 0; /* Ensure navbar sticks to the very top */
       z-index: 1000;
       transition: all 0.3s ease;
     }
@@ -63,6 +65,7 @@
     .nav-links {
       display: flex;
       gap: 2rem;
+      align-items: center;
     }
 
     .nav-links a {
@@ -84,6 +87,91 @@
       display: none;
       cursor: pointer;
       font-size: 1.5rem;
+    }
+
+    /* ==== Navigation Dropdown Styles ==== */
+    .nav-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-dropdown > a {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu li {
+      padding: 0;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1rem;
+      color: var(--dark);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: var(--light);
+      color: var(--primary);
+      padding-left: 1.2rem;
+    }
+
+    /* Mobile dropdown adjustments */
+    @media (max-width: 768px) {
+      .nav-dropdown {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+      
+      .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: none;
+        background-color: transparent;
+        width: 100%;
+        text-align: center;
+      }
+      
+      .nav-dropdown:hover .dropdown-menu,
+      .nav-dropdown.active .dropdown-menu {
+        display: block;
+      }
+      
+      .dropdown-menu a {
+        padding: 0.5rem 1rem;
+      }
     }
 
     .btn {
@@ -128,7 +216,6 @@
       text-align: center;
       padding: 0 5%;
       background: linear-gradient(135deg, rgba(74, 107, 255, 0.2), rgba(255, 107, 107, 0.2)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center/cover;
-      margin-top: 80px;
     }
 
     .admissions-hero-content h1 {
@@ -299,7 +386,7 @@
       max-height: 500px;
     }
 
-    /* Footer (Same as Homepage) */
+    /* ==== Footer Styles ==== */
     .footer {
       background-color: var(--dark);
       color: white;
@@ -323,11 +410,90 @@
       color: var(--accent);
     }
 
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links a {
+      color: #ddd;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .contact-info {
+      list-style: none;
+    }
+
+    .contact-info li {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .contact-info i {
+      color: var(--accent);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .social-links a:hover {
+      background-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .footer-bottom a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-bottom a:hover {
+      text-decoration: underline;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
+      body {
+        padding-top: 70px; /* Adjusted for smaller navbar height on mobile */
+      }
+
       .admissions-hero {
         height: 50vh;
-        margin-top: 70px;
       }
 
       .admissions-hero-content h1 {
@@ -340,10 +506,10 @@
 
       .nav-links {
         position: fixed;
-        top: 80px;
+        top: 70px;
         left: -100%;
         width: 80%;
-        height: calc(100vh - 80px);
+        height: calc(100vh - 70px);
         background-color: white;
         flex-direction: column;
         align-items: center;
@@ -370,83 +536,6 @@
         transform: translateY(0);
       }
     }
-    /* ==== Navigation Dropdown Styles ==== */
-.nav-dropdown {
-  position: relative;
-}
-
-.nav-dropdown > a {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: white;
-  min-width: 200px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  list-style: none;
-}
-
-.nav-dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-menu li {
-  padding: 0;
-}
-
-.dropdown-menu a {
-  display: block;
-  padding: 0.8rem 1rem;
-  color: var(--dark);
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
-.dropdown-menu a:hover {
-  background-color: var(--light);
-  color: var(--primary);
-  padding-left: 1.2rem;
-}
-
-/* Mobile dropdown adjustments */
-@media (max-width: 768px) {
-  .nav-dropdown {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .dropdown-menu {
-    position: static;
-    box-shadow: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    display: none;
-    background-color: transparent;
-  }
-  
-  .nav-dropdown:hover .dropdown-menu,
-  .nav-dropdown.active .dropdown-menu {
-    display: block;
-  }
-  
-  .dropdown-menu a {
-    padding: 0.5rem 1rem;
-  }
-}
   </style>
 </head>
 <body>
@@ -459,15 +548,15 @@
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
-      <a href="admission.html" class="active">Admissions</a>
-<li class="nav-dropdown">
-  <a href="#">CBT <i class="fas fa-chevron-down"></i></a>
-  <ul class="dropdown-menu">
-    <li><a href="cbt-practice.html">Practice Mode</a></li>
-    <li><a href="cbt-exam.html">Exam Mode</a></li>
-  </ul>
-</li>
-      <a href="#">Contact</a>
+      <a href="admissions.html" class="active">Admissions</a>
+      <li class="nav-dropdown">
+        <a href="#">CBT <i class="fas fa-chevron-down"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="cbt-practice.html">Practice Mode</a></li>
+          <li><a href="cbt-exam.html">Exam Mode</a></li>
+        </ul>
+      </li>
+      <a href="contact.html">Contact</a>
     </div>
     <div class="menu-toggle">
       <i class="fas fa-bars"></i>
@@ -564,9 +653,7 @@
       <h2 style="text-align: center; margin-bottom: 2rem;">Application Form</h2>
       <form name="admission-form" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="admission-form">
-        <p class="hidden">
-          <label>Don't fill this out if you're human: <input name="bot-field"></label>
-        </p>
+       
 
         <div class="form-group">
           <label>Applying for*</label>
@@ -692,13 +779,12 @@
     </div>
   </div>
 
-  <!-- Footer (Same as Homepage) -->
-  <footer class="footer">
+<footer class="footer">
     <div class="footer-container">
       <!-- School Info -->
       <div class="footer-section">
         <h3 class="footer-title">The Climax Brains Academy</h3>
-        <p>Empowering future leaders through excellence in education.</p>
+        <p>Raising Champions</p>
         <div class="social-links">
           <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
           <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
@@ -712,10 +798,9 @@
         <h3 class="footer-title">Quick Links</h3>
         <ul class="footer-links">
           <li><a href="index.html">Home</a></li>
-          <li><a href="#">About Us</a></li>
-          <li><a href="admissions.html">Admissions</a></li>
-          <li><a href="#">CBT Portal</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="admission.html">Admissions</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
 
@@ -723,7 +808,7 @@
       <div class="footer-section">
         <h3 class="footer-title">Contact Us</h3>
         <ul class="contact-info">
-          <li><i class="fas fa-map-marker-alt"></i> 123 Education St, Knowledge City</li>
+          <li><i class="fas fa-map-marker-alt"></i> Plot 6, Wema Bank Estate, Progress Avenue, Ijaba, Iyesi, Ota</li>
           <li><i class="fas fa-phone"></i> +1 (234) 567-8900</li>
           <li><i class="fas fa-envelope"></i> info@climaxbrains.edu</li>
         </ul>
@@ -783,36 +868,49 @@
       console.log('Form submitted!');
       // In a real implementation, this would be handled by Netlify Forms
     });
-    // Add this to your existing JavaScript
-const navDropdowns = document.querySelectorAll('.nav-dropdown');
 
-// Mobile dropdown toggle
-navDropdowns.forEach(dropdown => {
-  const link = dropdown.querySelector('> a');
-  
-  link.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768) {
-      e.preventDefault();
-      dropdown.classList.toggle('active');
+    // Enhanced dropdown functionality
+    const navDropdowns = document.querySelectorAll('.nav-dropdown');
+
+    // Mobile dropdown toggle
+    navDropdowns.forEach(dropdown => {
+      const link = dropdown.querySelector('> a');
       
-      // Close other open dropdowns
-      navDropdowns.forEach(otherDropdown => {
-        if (otherDropdown !== dropdown && otherDropdown.classList.contains('active')) {
-          otherDropdown.classList.remove('active');
+      link.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropdown.classList.toggle('active');
+          
+          // Close other open dropdowns
+          navDropdowns.forEach(otherDropdown => {
+            if (otherDropdown !== dropdown && otherDropdown.classList.contains('active')) {
+              otherDropdown.classList.remove('active');
+            }
+          });
         }
       });
-    }
-  });
-});
-
-// Close dropdown when clicking elsewhere
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.nav-dropdown') && window.innerWidth <= 768) {
-    navDropdowns.forEach(dropdown => {
-      dropdown.classList.remove('active');
     });
-  }
-});
+
+    // Close dropdown when clicking elsewhere
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        navDropdowns.forEach(dropdown => {
+          if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+
+    // Close dropdown when clicking on a dropdown item
+    document.querySelectorAll('.dropdown-menu a').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          item.closest('.nav-dropdown').classList.remove('active');
+        }
+      });
+    });
   </script>
 </body>
 </html>
