@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Us | The Climax Brains Academy</title>
+  <title>The Climax Brains Academy</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* ==== Base Styles (Same as Homepage) ==== */
+    /* ==== CSS Styles ==== */
     :root {
       --primary: #4a6bff;
       --secondary: #ff6b6b;
@@ -28,7 +28,7 @@
       overflow-x: hidden;
     }
 
-    /* ==== Navbar (Same as Homepage) ==== */
+    /* ==== Navbar ==== */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -63,6 +63,7 @@
     .nav-links {
       display: flex;
       gap: 2rem;
+      align-items: center;
     }
 
     .nav-links a {
@@ -86,171 +87,161 @@
       font-size: 1.5rem;
     }
 
-    /* ==== About Page Hero ==== */
-    .about-hero {
-      height: 60vh;
+    /* ==== Hero Section ==== */
+    .hero {
+      height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
       padding: 0 5%;
-      background: linear-gradient(135deg, rgba(74, 107, 255, 0.2), rgba(255, 107, 107, 0.2)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center/cover;
+      background: linear-gradient(135deg, rgba(74, 107, 255, 0.1), rgba(255, 107, 107, 0.1)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center/cover;
       position: relative;
-      margin-top: 80px;
     }
 
-    .about-hero::before {
+    .hero::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.4);
     }
 
-    .about-hero-content {
+    .hero-content {
       position: relative;
       z-index: 1;
+      max-width: 600px;
       color: white;
-      max-width: 800px;
     }
 
-    .about-hero-content h1 {
-      font-size: 3rem;
+    .hero-content h1 {
+      font-size: 3.5rem;
       margin-bottom: 1rem;
       animation: fadeInUp 1s ease;
     }
 
-    .about-hero-content p {
+    .hero-content p {
       font-size: 1.2rem;
+      margin-bottom: 2rem;
       opacity: 0.9;
       animation: fadeInUp 1.2s ease;
     }
 
-    /* ==== About Sections ==== */
-    .about-section {
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      animation: fadeInUp 1.4s ease;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #05b389;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(6, 214, 160, 0.3);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+      background-color: white;
+      color: var(--dark);
+      transform: translateY(-3px);
+    }
+
+    /* ==== News Ticker ==== */
+    .news-ticker {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.8rem 5%;
+      overflow: hidden;
+    }
+
+    .ticker-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-label {
+      background-color: var(--secondary);
+      padding: 0.3rem 0.8rem;
+      border-radius: 5px;
+      margin-right: 1rem;
+      font-weight: 600;
+    }
+
+    .ticker-content {
+      white-space: nowrap;
+      animation: ticker 20s linear infinite;
+    }
+
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ==== Features Section ==== */
+    .features {
       padding: 5rem 5%;
+      text-align: center;
+      background-color: white;
     }
 
     .section-title {
       font-size: 2.5rem;
       margin-bottom: 1rem;
       color: var(--dark);
-      text-align: center;
     }
 
     .section-subtitle {
       color: var(--secondary);
       margin-bottom: 3rem;
-      text-align: center;
     }
 
-    .history-mission {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 3rem;
-      margin-bottom: 5rem;
-    }
-
-    .history-card, .mission-vision-card {
-      background-color: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-    }
-
-    .history-card:hover, .mission-vision-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-title {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .card-title i {
-      color: var(--accent);
-    }
-
-    /* ==== Faculty Section ==== */
-    .faculty-grid {
+    .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 2rem;
     }
 
-    .faculty-card {
-      background-color: white;
+    .feature-card {
+      background-color: var(--light);
+      padding: 2rem;
       border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
-      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
 
-    .faculty-card:hover {
+    .feature-card:hover {
       transform: translateY(-10px);
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
     }
 
-    .faculty-img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-    }
-
-    .faculty-info {
-      padding: 1.5rem;
-    }
-
-    .faculty-name {
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-      color: var(--dark);
-    }
-
-    .faculty-position {
-      color: var(--secondary);
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
       margin-bottom: 1rem;
-      font-weight: 600;
     }
 
-    /* ==== Stats Section ==== */
-    .stats {
-      background-color: var(--primary);
-      color: white;
-      padding: 5rem 5%;
-      text-align: center;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .stat-item {
-      padding: 1.5rem;
-    }
-
-    .stat-number {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-    }
-
-    .stat-label {
-      font-size: 1.1rem;
-      opacity: 0.9;
+    .feature-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
     }
 
     /* ==== Animations ==== */
@@ -265,7 +256,42 @@
       }
     }
 
-    /* ==== Footer (Same as Homepage) ==== */
+    /* ==== Responsive Design ==== */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 80%;
+        height: calc(100vh - 80px);
+        background-color: white;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 0;
+        transition: all 0.3s ease;
+      }
+
+      .nav-links.active {
+        left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+      }
+    }
+    /* ==== Footer Styles ==== */
     .footer {
       background-color: var(--dark);
       color: white;
@@ -364,115 +390,90 @@
     .footer-bottom a:hover {
       text-decoration: underline;
     }
+    /* ==== Navigation Dropdown Styles ==== */
+    .nav-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
 
-    /* ==== Responsive Design ==== */
+    .nav-dropdown > a {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu li {
+      padding: 0;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1rem;
+      color: var(--dark);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: var(--light);
+      color: var(--primary);
+      padding-left: 1.2rem;
+    }
+
+    /* Mobile dropdown adjustments */
     @media (max-width: 768px) {
-      .nav-links {
-        position: fixed;
-        top: 80px;
-        left: -100%;
-        width: 80%;
-        height: calc(100vh - 80px);
-        background-color: white;
-        flex-direction: column;
-        align-items: center;
-        padding: 2rem 0;
-        transition: all 0.3s ease;
+      .nav-dropdown {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
       }
-
-      .nav-links.active {
-        left: 0;
+      
+      .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: none;
+        background-color: transparent;
+        width: 100%;
+        text-align: center;
       }
-
-      .menu-toggle {
+      
+      .nav-dropdown:hover .dropdown-menu,
+      .nav-dropdown.active .dropdown-menu {
         display: block;
       }
-
-      .about-hero-content h1 {
-        font-size: 2.2rem;
-      }
-
-      .about-hero-content p {
-        font-size: 1rem;
+      
+      .dropdown-menu a {
+        padding: 0.5rem 1rem;
       }
     }
-    /* ==== Navigation Dropdown Styles ==== */
-.nav-dropdown {
-  position: relative;
-}
-
-.nav-dropdown > a {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: white;
-  min-width: 200px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  list-style: none;
-}
-
-.nav-dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-menu li {
-  padding: 0;
-}
-
-.dropdown-menu a {
-  display: block;
-  padding: 0.8rem 1rem;
-  color: var(--dark);
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
-.dropdown-menu a:hover {
-  background-color: var(--light);
-  color: var(--primary);
-  padding-left: 1.2rem;
-}
-
-/* Mobile dropdown adjustments */
-@media (max-width: 768px) {
-  .nav-dropdown {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .dropdown-menu {
-    position: static;
-    box-shadow: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    display: none;
-    background-color: transparent;
-  }
-  
-  .nav-dropdown:hover .dropdown-menu,
-  .nav-dropdown.active .dropdown-menu {
-    display: block;
-  }
-  
-  .dropdown-menu a {
-    padding: 0.5rem 1rem;
-  }
-}
   </style>
 </head>
 <body>
@@ -483,16 +484,16 @@
       <span>The Climax Brains Academy</span>
     </div>
     <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="about.html" class="active">About</a>
+      <a href="#" class="active">Home</a>
+      <a href="about.html">About</a>
       <a href="admission.html">Admissions</a>
-    <li class="nav-dropdown">
-  <a href="#">CBT <i class="fas fa-chevron-down"></i></a>
-  <ul class="dropdown-menu">
-    <li><a href="practice.html">Practice Mode</a></li>
-    <li><a href="exam.html">Exam Mode</a></li>
-  </ul>
-</li>
+      <li class="nav-dropdown">
+        <a href="#">CBT <i class="fas fa-chevron-down"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="cbt-practice.html">Practice Mode</a></li>
+          <li><a href="cbt-exam.html">Exam Mode</a></li>
+        </ul>
+      </li>
       <a href="contact.html">Contact</a>
     </div>
     <div class="menu-toggle">
@@ -500,144 +501,56 @@
     </div>
   </nav>
 
-  <!-- ==== About Hero ==== -->
-  <section class="about-hero">
-    <div class="about-hero-content">
-      <h1>Our Story</h1>
-      <p>Discover the journey of excellence that defines The Climax Brains Academy</p>
-    </div>
-  </section>
-
-  <!-- ==== History & Mission Section ==== -->
-  <section class="about-section">
-    <h2 class="section-title">Who We Are</h2>
-    <p class="section-subtitle">Building Futures Since 2010</p>
-
-    <div class="history-mission">
-      <div class="history-card">
-        <h3 class="card-title"><i class="fas fa-history"></i> Our History</h3>
-        <p>Founded in 2010, The Climax Brains Academy began as a small learning center with just 50 students. Today, we've grown into a premier educational institution serving over 2,000 students annually.</p>
-        <p>Our commitment to innovative teaching methods and technology integration has made us a leader in modern education.</p>
-      </div>
-
-      <div class="mission-vision-card">
-        <h3 class="card-title"><i class="fas fa-bullseye"></i> Mission & Vision</h3>
-        <p><strong>Mission:</strong> To provide transformative learning experiences that empower students to achieve their highest potential through innovative education.</p>
-        <p><strong>Vision:</strong> To be recognized as Africa's leading institution for academic excellence and character development.</p>
+  <!-- ==== Hero Section ==== -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Unlock Your Potential</h1>
+      <p>At The Climax Brains Academy, we nurture future leaders with world-class education and cutting-edge technology.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary">Apply Now</a>
+        <a href="#" class="btn btn-secondary">Learn More</a>
       </div>
     </div>
   </section>
 
-  <!-- ==== Stats Section ==== -->
-  <section class="stats">
-    <h2 class="section-title">By The Numbers</h2>
-    <p class="section-subtitle">Our Impact in Education</p>
+  <!-- ==== News Ticker ==== -->
+  <div class="news-ticker">
+    <div class="ticker-container">
+      <span class="ticker-label">Latest News</span>
+      <div class="ticker-content">
+        Admissions for 2024 are now open! | CBT mock tests available | School tour dates announced
+      </div>
+    </div>
+  </div>
 
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-number">14+</div>
-        <div class="stat-label">Years of Excellence</div>
+  <!-- ==== Features Section ==== -->
+  <section class="features">
+    <h2 class="section-title">Why Choose Us?</h2>
+    <p class="section-subtitle">Excellence in Education Since 2010</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-laptop-code"></i>
+        </div>
+        <h3 class="feature-title">Modern CBT System</h3>
+        <p>Interactive computer-based testing for accurate assessments.</p>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">98%</div>
-        <div class="stat-label">Pass Rate</div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <h3 class="feature-title">Expert Tutors</h3>
+        <p>Highly qualified teachers with years of experience.</p>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">50+</div>
-        <div class="stat-label">Qualified Teachers</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">2000+</div>
-        <div class="stat-label">Successful Graduates</div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <h3 class="feature-title">Comprehensive Curriculum</h3>
+        <p>Designed to meet global educational standards.</p>
       </div>
     </div>
   </section>
-
-  <!-- ==== Faculty Section ==== -->
-  <section class="about-section">
-    <h2 class="section-title">Meet Our Faculty</h2>
-    <p class="section-subtitle">Dedicated Professionals Shaping Minds</p>
-
-    <div class="faculty-grid">
-      <div class="faculty-card">
-        <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Dr. Ada Johnson" class="faculty-img">
-        <div class="faculty-info">
-          <h3 class="faculty-name">Dr. Ada Johnson</h3>
-          <p class="faculty-position">Principal</p>
-          <p>PhD in Educational Leadership with 15+ years experience</p>
-        </div>
-      </div>
-      <div class="faculty-card">
-        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Prof. David Okon" class="faculty-img">
-        <div class="faculty-info">
-          <h3 class="faculty-name">Prof. David Okon</h3>
-          <p class="faculty-position">Head of Sciences</p>
-          <p>Specializes in STEM education and research</p>
-        </div>
-      </div>
-      <div class="faculty-card">
-        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Mrs. Amina Yusuf" class="faculty-img">
-        <div class="faculty-info">
-          <h3 class="faculty-name">Mrs. Amina Yusuf</h3>
-          <p class="faculty-position">Head of Arts</p>
-          <p>Passionate about creative education</p>
-        </div>
-      </div>
-      <div class="faculty-card">
-        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Mr. Chike Obi" class="faculty-img">
-        <div class="faculty-info">
-          <h3 class="faculty-name">Mr. Chike Obi</h3>
-          <p class="faculty-position">ICT Director</p>
-          <p>Pioneer of our CBT program</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==== Footer ==== -->
-  <footer class="footer">
-    <div class="footer-container">
-      <!-- School Info -->
-      <div class="footer-section">
-        <h3 class="footer-title">The Climax Brains Academy</h3>
-        <p>Empowering future leaders through excellence in education.</p>
-        <div class="social-links">
-          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-
-      <!-- Quick Links -->
-      <div class="footer-section">
-        <h3 class="footer-title">Quick Links</h3>
-        <ul class="footer-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="#">Admissions</a></li>
-          <li><a href="#">CBT Portal</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-
-      <!-- Contact Info -->
-      <div class="footer-section">
-        <h3 class="footer-title">Contact Us</h3>
-        <ul class="contact-info">
-          <li><i class="fas fa-map-marker-alt"></i> 123 Education St, Knowledge City</li>
-          <li><i class="fas fa-phone"></i> +1 (234) 567-8900</li>
-          <li><i class="fas fa-envelope"></i> info@climaxbrains.edu</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Copyright & Credits -->
-    <div class="footer-bottom">
-      <p>&copy; <span id="year"></span> The Climax Brains Academy. All Rights Reserved.</p>
-      <p>Powered by <a href="https://digskills.com" target="_blank">DigSkills</a></p>
-    </div>
-  </footer>
 
   <!-- ==== JavaScript ==== -->
   <script>
@@ -659,12 +572,19 @@
       navLinks.classList.toggle('active');
     });
 
-    // Update copyright year automatically
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
 
-    // Animate elements on scroll
+    // Animate elements on scroll (Intersection Observer)
     const animateOnScroll = () => {
-      const elements = document.querySelectorAll('.history-card, .mission-vision-card, .faculty-card, .stat-item');
+      const elements = document.querySelectorAll('.feature-card, .section-title, .section-subtitle');
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -683,36 +603,95 @@
     };
 
     window.addEventListener('load', animateOnScroll);
-    // Add this to your existing JavaScript
-const navDropdowns = document.querySelectorAll('.nav-dropdown');
+    
+    // Update copyright year automatically
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Enhanced dropdown functionality
+    const navDropdowns = document.querySelectorAll('.nav-dropdown');
 
-// Mobile dropdown toggle
-navDropdowns.forEach(dropdown => {
-  const link = dropdown.querySelector('> a');
-  
-  link.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768) {
-      e.preventDefault();
-      dropdown.classList.toggle('active');
+    // Mobile dropdown toggle
+    navDropdowns.forEach(dropdown => {
+      const link = dropdown.querySelector('> a');
       
-      // Close other open dropdowns
-      navDropdowns.forEach(otherDropdown => {
-        if (otherDropdown !== dropdown && otherDropdown.classList.contains('active')) {
-          otherDropdown.classList.remove('active');
+      link.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropdown.classList.toggle('active');
+          
+          // Close other open dropdowns
+          navDropdowns.forEach(otherDropdown => {
+            if (otherDropdown !== dropdown && otherDropdown.classList.contains('active')) {
+              otherDropdown.classList.remove('active');
+            }
+          });
         }
       });
-    }
-  });
-});
-
-// Close dropdown when clicking elsewhere
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.nav-dropdown') && window.innerWidth <= 768) {
-    navDropdowns.forEach(dropdown => {
-      dropdown.classList.remove('active');
     });
-  }
-});
+
+    // Close dropdown when clicking elsewhere
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        navDropdowns.forEach(dropdown => {
+          if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+
+    // Close dropdown when clicking on a dropdown item
+    document.querySelectorAll('.dropdown-menu a').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          item.closest('.nav-dropdown').classList.remove('active');
+        }
+      });
+    });
   </script>
+  <!-- ==== Footer ==== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <!-- School Info -->
+      <div class="footer-section">
+        <h3 class="footer-title">The Climax Brains Academy</h3>
+        <p>Empowering future leaders through excellence in education.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h3 class="footer-title">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="admission.html">Admissions</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="footer-section">
+        <h3 class="footer-title">Contact Us</h3>
+        <ul class="contact-info">
+          <li><i class="fas fa-map-marker-alt"></i> 123 Education St, Knowledge City</li>
+          <li><i class="fas fa-phone"></i> +1 (234) 567-8900</li>
+          <li><i class="fas fa-envelope"></i> info@climaxbrains.edu</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright & Credits -->
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> The Climax Brains Academy. All Rights Reserved.</p>
+      <p>Powered by <a href="https://digskills.com" target="_blank">DigSkills</a></p>
+    </div>
+  </footer>
 </body>
 </html>
