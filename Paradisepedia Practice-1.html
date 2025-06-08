@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paradisepedia Mathematics Practice</title>
+  <style>
+    /* === BASE STYLES === */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffffff 0%, #fff9e6 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      color: #8B0000;
+    }
+    
+    h1, h2, h3 {
+      color: #8B0000;
+      text-align: center;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .practice-banner {
+      background-color: #FFD700;
+      color: #8B0000;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      border: 2px solid #FF8C00;
+    }
+    
+    /* === FORM SECTION STYLES === */
+    .form-section {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: rgba(255,255,255,0.9);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+      border: 2px solid #FFD700;
+    }
+    
+    .form-container {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .animated-border {
+      height: 4px;
+      width: 100px;
+      background: linear-gradient(90deg, #FF8C00 0%, #FFD700 100%);
+      margin: 0.5rem auto;
+      border-radius: 2px;
+      animation: borderGrow 2s infinite alternate;
+    }
+    
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .input-group input, 
+    .input-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #FFD700;
+      border-radius: 8px;
+      background: #fffdf5;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.05),
+                  -5px -5px 15px rgba(255,255,255,0.8);
+    }
+    
+    .input-group input:focus, 
+    .input-group select:focus {
+      outline: none;
+      border-color: #FF8C00;
+      box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+    }
+    
+    .input-focus {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #FF8C00;
+      transition: width 0.3s ease;
+      z-index: 1;
+    }
+    
+    .select-arrow {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #8B0000;
+      pointer-events: none;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(45deg, #FFD700 0%, #FF8C00 100%);
+      color: #8B0000;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      margin-top: 1rem;
+      width: 100%;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 20px rgba(255, 140, 0, 0.6);
+    }
+    
+    .btn-wave {
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: rgba(255,255,255,0.2);
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+    
+    .submit-btn:hover .btn-wave {
+      top: -30%;
+      left: -30%;
+    }
+    
+    .floating-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+    }
+    
+    .circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      top: 20%;
+      left: 10%;
+      animation: float 8s infinite ease-in-out;
+    }
+    
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-bottom: 100px solid #FF8C00;
+      top: 60%;
+      right: 10%;
+      animation: float 10s infinite ease-in-out;
+    }
+    
+    .square {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #FF8C00, #FF4500);
+      bottom: 10%;
+      left: 50%;
+      animation: float 12s infinite ease-in-out;
+    }
+    
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+    
+    /* === QUIZ SECTION STYLES === */
+    .quiz-section {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 2px solid #FFD700;
+    }
+    
+    .question {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #FFD700;
+    }
+    
+    .question:last-child {
+      border-bottom: none;
+    }
+    
+    /* === RESULT SECTION STYLES === */
+    .result-section {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 2px solid #FFD700;
+    }
+    
+    .score-display {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .score {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #8B0000;
+    }
+    
+    .percentage {
+      font-size: 1.8rem;
+      color: #FF8C00;
+    }
+    
+    .answers-review {
+      margin-top: 30px;
+      text-align: left;
+    }
+    
+    .answer {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    
+    .answer.correct {
+      background-color: rgba(0, 128, 0, 0.1);
+      border-left: 4px solid green;
+    }
+    
+    .answer.incorrect {
+      background-color: rgba(255, 0, 0, 0.1);
+      border-left: 4px solid red;
+    }
+    
+    .instruction {
+      font-style: italic;
+      color: #555;
+      font-size: 0.9rem;
+      margin: 5px 0 10px;
+    }
+    
+    .time-info {
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    /* === ANIMATIONS === */
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-20px) rotate(10deg);
+      }
+    }
+    
+    @keyframes borderGrow {
+      0% {
+        width: 100px;
+      }
+      100% {
+        width: 200px;
+      }
+    }
+    
+    @keyframes ripple {
+      to {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+    
+    /* === MOBILE OPTIMIZATION === */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+        font-size: 16px;
+      }
+      
+      .form-section, .quiz-section, .result-section {
+        width: 95%;
+        margin: 1rem auto;
+        padding: 1rem;
+      }
+      
+      .submit-btn {
+        padding: 15px;
+        font-size: 18px;
+      }
+      
+      .practice-banner {
+        font-size: 1rem;
+      }
+    }
+    /* === FOOTER STYLES === */
+.footer {
+  text-align: center;
+  margin: 30px auto 0;
+  padding: 15px;
+  color: #8B0000;
+  font-size: 0.9rem;
+  border-top: 1px solid #FFD700;
+  max-width: 800px;
+}
+
+/* Add these styles to your existing CSS */
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.nav-btn {
+  background: linear-gradient(45deg, #FFD700 0%, #FFA500 100%);
+  color: #8B0000;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nav-btn.submit {
+  background: linear-gradient(45deg, #4CAF50 0%, #2E7D32 100%);
+  color: white;
+}
+
+/* === QUIZ BUTTONS === */
+#submitQuiz {
+  display: block;
+  margin: 20px auto 0;
+  width: auto;
+  padding: 12px 40px;
+}
+
+.nav-btn.submit {
+  background: linear-gradient(45deg, #4CAF50 0%, #2E7D32 100%);
+  color: white;
+  margin-left: auto; /* Pushes submit button to right */
+}
+  </style>
+ 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <div class="practice-banner">
+    PRACTICE SESSION - 120 QUESTIONS (30 SECONDS PER QUESTION)
+  </div>
+  
+  <h1>Paradise Model School</h1>
+  <h2>Paradisepedia Practice Session</h2>
+
+  <!-- STUDENT DETAILS FORM -->
+  <div class="form-section">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>Practice Setup</h2>
+        <div class="animated-border"></div>
+      </div>
+      <form id="practiceForm">
+        <div class="input-group">
+          <label for="studentName">Name:</label>
+          <input type="text" id="studentName" required placeholder="Enter your full name">
+          <div class="input-focus"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="studentClass">Class:</label>
+          <select id="studentClass" required>
+            <option value="">Select Class</option>
+            <option>JSS1</option>
+            <option>JSS2</option>
+            <option>JSS3</option>
+            <option>SSS1</option>
+            <option>SSS2</option>
+            <option>SSS3</option>
+          </select>
+          <div class="select-arrow"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="studentCategory">Category:</label>
+          <select id="studentCategory" required>
+            <option value="">Select Category</option>
+            <option value="junior">Junior</option>
+            <option value="senior">Senior</option>
+          </select>
+          <div class="select-arrow"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="questionCount">Input Number of Questions (1-120):</label>
+          <input type="number" id="questionCount" min="1" max="120" value="0" required>
+          <div class="time-info">
+            Estimated Time: <span id="estimatedTime">0 minutes</span>
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <span>Start Practice</span>
+          <div class="btn-wave"></div>
+        </button>
+      </form>
+    </div>
+    <div class="floating-shapes">
+      <div class="shape circle"></div>
+      <div class="shape triangle"></div>
+      <div class="shape square"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ SECTION -->
+  <div class="quiz-section hidden">
+    <h3>Practice Session (<span id="timer">00:00</span>)</h3>
+    <form id="quizForm"></form>
+    <button id="submitQuiz" class="submit-btn">Submit Practice</button>
+  </div>
+
+  <!-- RESULT SECTION -->
+  <div class="result-section hidden">
+    <!-- Results will be dynamically inserted here -->
+  </div>
+<footer class="footer">
+  Courtesy of Paradise Coding Club
+</footer>
+<script>
+// ===== QUESTION BANK =====
+// Replace these with your full set of 120 questions per category (all theory)
+const practiceQuestions = {
+  junior: [
+    {
+      text: "Express 0.089752 correct to 3 significant figure.",
+      answer: "0.0898",
+      instruction: "Enter the number in decimal"
+    },
+    {
+      text: "A number which is 5 less than t is...",
+      answer: "t-5",
+      instruction: "Enter the answer in simple form, without space"
+    },
+    {
+      text: "Express 60 as a percentage of 80",
+      answer: "75",
+      instruction: "Enter only the numerical answer, no symbol"
+    },
+    {
+      text: "Calculate 82.4 * 24.025 and expess the answer in standard form to 2 decimal places",
+      answer: "1.98x10^3",
+      instruction: "Enter in the form a×10^b (use × and ^ symbols)"
+    },
+    {
+      text: "Change the number 10010<sub>two</sub> to base ten",
+      answer: "18",
+      instruction: "Enter the numerical value"
+    },
+    {
+      text: "The sum of three consecutive even numbers is 72. The highest of the three number is...",
+      answer: "26",
+      instruction: "Enter the answer in the space provided"
+    },
+    {
+      text: "Which of the following are factors of 6a<sup>2</sup> - 2ab - 3ab + b<sup>2</sup>",
+      answer: "(3a-b)",
+      instruction: "Enter in simple form, no space"
+    },
+    {
+      text: "If S=2(n-2) find n when S=18",
+      answer: "11",
+      instruction: "Enter the answer in the space provided"
+    },
+    {
+      text: "Find the products of the square of <sup>1</sup>/<sub>2</sub> and the sum of 13 and 19",
+      answer: "9",
+      instruction: "Enter the answer in the space provided"
+    },
+    {
+      text: "The exact value of (285)<sup>2</sup> - (215)<sup>2</sup>",
+      answer: "3500",
+      instruction: "Enter the answer in simple form, no comma e.g. 45000"
+    },
+    {
+      text: "If 6/5 =3/d, the d=",
+      answer: "2.5",
+      instruction: "Enter the answer in decimal e.g. 6.2"
+    },
+    {
+      text: "The coefficient of x in the expansion of (x-2)(x+9) is",
+      answer: "7",
+      instruction: "Enter the answer in the space provided"
+    },
+    {
+      text: "Find the smallest number by which 350 must be multiplied to give a perfect square",
+      answer: "14",
+      instruction: "Enter the answer in the space provided"
+    },
+    {
+      text: "      8, 9, 5, 6, 2, 4, 8, 0 <br>The mode of the above number is",
+      answer: "8",
+      instruction: "Enter the answer in the space provided"
+    },
+    {
+      text: "      8, 9, 5, 6, 2, 4, 8, 0 <br>The median of the above number is",
+      answer: "5.5",
+      instruction: "Enter the answer in decimal e.g. 6.2"
+    },
+    {
+      text: "      8, 9, 5, 6, 2, 4, 8, 0 <br>The mean of the above number is",
+      answer: "5.25",
+      instruction: "Enter the answer correct to 2 decimal places e.g. 6.24"
+    },
+    {
+      text: "How much simple interest does N6000 make in 3years at 7% per annum?",
+      answer: "1260",
+      instruction: "Enter the answer in simple form, no comma e.g. 45000"
+    },
+    {
+      text: "Express <sup>1</sup>/<sub>u</sub> + <sup>1</sup>/<sub>v</sub>",
+      answer: "(v+u)/uv",
+      instruction: "Enter the answer in this format (x+y)/xy"
+    },
+    {
+      text: "Four lines meet at a point. The sum of three of the angles at the point is 267°",
+      answer: "94",
+      instruction: "Enter the numerical value only"
+    },
+    {
+      text: "Factorise x<sup>2</sup> - 7x - 30",
+      answer: "(x-10)(x+3)",
+      instruction: "Enter the answer in the space provided"
+    },
+    {
+      text: "Find the product of -5x, 3x and -2x",
+      answer: "30x^3",
+      instruction: "Enter the product in the form ax^b (e.g. 30x^3)"
+    },
+    {
+      text: "How many perfect squares are in this set: 1, 3, 4, 6, 9, 6, 4, 6?",
+      answer: "3",
+      instruction: "Enter the count of perfect squares"
+    },
+    {
+      text: "A letter is chosen at random from the alphabet. What is the probability that it is one of the letters in the word 'AUNTY'?",
+      answer: "5/26",
+      instruction: "Enter the probability as a simplified fraction a/b"
+    },
+    {
+      text: "Calculate the area of a circle with diameter 7cm (take π as 22/7)",
+      answer: "38.5",
+      instruction: "Enter the area in cm² with one decimal place"
+    },
+    {
+      text: "Convert 57 in base ten to a number in base two",
+      answer: "111001",
+      instruction: "Enter the binary number without base notation"
+    },
+    {
+      text: "Factorize 4x² - 1",
+      answer: "(2x-1)(2x+1)",
+      instruction: "Enter factors in the form (ax±b)(cx±d)"
+    },
+    {
+      text: "What is the size of one interior angle of a regular octagon?",
+      answer: "135",
+      instruction: "Enter the angle in degrees (number only)"
+    },
+    {
+      text: "A box contains 4 blue balls and 6 red balls. If a ball is selected at random, what is the probability of selecting a blue ball?",
+      answer: "2/5",
+      instruction: "Enter the probability as a simplified fraction a/b"
+    },
+    {
+      text: "Approximate 0.0007925 to 3 significant figures",
+      answer: "0.000793",
+      instruction: "Enter the approximated value"
+    },
+    {
+      text: "Find the compound interest on ₦30,000 for 2 years at 7% per annum",
+      answer: "4347",
+      instruction: "Enter the interest amount in naira (no symbols)"
+    },
+    {
+      text: "Reduce 48/72 to its lowest terms",
+      answer: "2/3",
+      instruction: "Enter the simplified fraction a/b"
+    },
+    {
+      text: "The area of a rectangle is 10cm² and one side is 8cm long. Find its perimeter",
+      answer: "21cm",
+      instruction: "Enter the perimeter in cm (whole number)"
+    },
+    {
+      text: "What is the additive inverse of 11/12?",
+      answer: "-11/12",
+      instruction: "Enter the additive inverse as a fraction"
+    },
+    {
+      text: "Mr and Mrs Samuel bought a generator for ₦120,000 and sold it for ₦80,000. What is their percentage loss?",
+      answer: "33.33",
+      instruction: "Enter the percentage loss with two decimal places"
+    },
+    {
+      text: "Write 6.73 × 10⁵ in full",
+      answer: "673000",
+      instruction: "Enter the full number without commas"
+    },
+    {
+      text: "Find the value of x if 9x² = 4",
+      answer: "2/3",
+      instruction: "Enter the positive solution as a simplified fraction a/b"
+    },
+    {
+      text: "Simplify 5a - 3b - a + 2b",
+      answer: "4a-b",
+      instruction: "Enter the simplified expression without spaces"
+    },
+    {
+      text: "Jide is three times as old as his sister Janet. If the sum of their ages is 20 years, find the difference between their ages",
+      answer: "10",
+      instruction: "Enter the age difference in years"
+    },
+    {
+      text: "Express 0.85 as a fraction",
+      answer: "17/20",
+      instruction: "Enter as a simplified fraction a/b"
+    },
+    {
+      text: "Bola is 12 years old and Tunde is 8 years old. They shared 15 oranges in the ratio of their ages. How many oranges will Bola receive?",
+      answer: "9",
+      instruction: "Enter the number of oranges (whole number)"
+    },
+    {
+      text: "What is the reciprocal of 20?",
+      answer: "0.05",
+      instruction: "Enter the decimal value"
+    },
+    {
+      text: "When a number is trebled and 7 is subtracted from it, the result equals 8. Find the number",
+      answer: "5",
+      instruction: "Enter the numerical value"
+    },
+    {
+      text: "Express 4,570,000 in standard form",
+      answer: "4.57×10^6",
+      instruction: "Enter in the form a×10^b (use × and ^ symbols)"
+    },
+    {
+      text: "Find the value of 2y² - 3 when y = 5",
+      answer: "47",
+      instruction: "Enter the numerical result"
+    },
+    {
+      text: "9 was subtracted from a number and the result was divided by 4, giving 5. What was the original number?",
+      answer: "29",
+      instruction: "Enter the original number"
+    },
+    {
+      text: "What is the value of 6 squared?",
+      answer: "36",
+      instruction: "Enter the numerical value"
+    },
+    {
+  "text": "A farmer harvested 240 bags of maize in 8 days. If he harvests at the same rate, how many bags will he harvest in 15 days?",
+  "answer": "450",
+  "instruction": "Enter the total number of bags"
+},
+{
+  "text": "A bottle is filled with water to 3/4 of its capacity. If the bottle holds 1.2 litres when full, how much water is in the bottle?",
+  "answer": "0.9",
+  "instruction": "Enter the amount of water in litres (use decimals)"
+},
+{
+  "text": "A man invested ₦50,000 at an annual simple interest rate of 6%. How much interest will he earn in 2 years?",
+  "answer": "6000",
+  "instruction": "Enter the interest in naira (no symbols)"
+},
+{
+  "text": "The perimeter of a rectangular field is 64 metres. If the length is 20 metres, what is the width?",
+  "answer": "12",
+  "instruction": "Enter the width in metres"
+},
+  {
+    "text": "What is the place value of 7 in the number 3,748?",
+    "answer": "700",
+    "instruction": "Enter the place value of 7"
+  },
+  {
+    "text": "What is the value of 6³?",
+    "answer": "216",
+    "instruction": "Enter the value of 6 raised to the power of 3"
+  },
+  {
+    "text": "A bag contains 5 red balls and 3 green balls. What is the total number of balls?",
+    "answer": "8",
+    "instruction": "Enter the total number of balls"
+  },
+  {
+    "text": "What is 15% of 200?",
+    "answer": "30",
+    "instruction": "Enter the value"
+  },
+  {
+    "text": "Simplify: 2(3 + 4) - 5",
+    "answer": "9",
+    "instruction": "Enter the simplified result"
+  },
+  {
+    "text": "Find the LCM of 4 and 5",
+    "answer": "20",
+    "instruction": "Enter the least common multiple"
+  },
+  {
+    "text": "Add: 3.2 + 1.8",
+    "answer": "5",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "Subtract: 6.5 - 2.3",
+    "answer": "4.2",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "What is the next number in the pattern: 2, 4, 8, 16, ___?",
+    "answer": "32",
+    "instruction": "Enter the next number"
+  },
+  {
+    "text": "Divide: 45 ÷ 5",
+    "answer": "9",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "Find the area of a square with side 6 cm",
+    "answer": "36",
+    "instruction": "Enter the area in square centimetres"
+  },
+  {
+    "text": "Convert 3/4 to percentage",
+    "answer": "75",
+    "instruction": "Enter the percentage"
+  },
+  {
+    "text": "Multiply: 0.5 × 0.2",
+    "answer": "0.1",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "What is the median of 3, 5, 7, 9, 11?",
+    "answer": "7",
+    "instruction": "Enter the median"
+  },
+  {
+    "text": "Solve for x: 3x = 12",
+    "answer": "4",
+    "instruction": "Enter the value of x"
+  },
+  {
+    "text": "How many degrees are in a right angle?",
+    "answer": "90",
+    "instruction": "Enter the number of degrees"
+  },
+  {
+    "text": "A car travels 60 km in 2 hours. What is its speed?",
+    "answer": "30",
+    "instruction": "Enter the speed in km/h"
+  },
+  {
+    "text": "Round 78.645 to 1 decimal place",
+    "answer": "78.6",
+    "instruction": "Enter the rounded number"
+  },
+  {
+    "text": "What is ⅖ of 100?",
+    "answer": "40",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "Express 0.6 as a fraction in simplest form",
+    "answer": "3/5",
+    "instruction": "Enter the fraction"
+  },
+  {
+    "text": "If a triangle has angles 35°, 65°, and x°, find the value of x",
+    "answer": "80",
+    "instruction": "Enter the value of x"
+  },
+  {
+    "text": "Find the simple interest on ₦2000 for 2 years at 5% per annum",
+    "answer": "200",
+    "instruction": "Enter the interest in naira"
+  },
+  {
+    "text": "What is the square root of 121?",
+    "answer": "11",
+    "instruction": "Enter the square root"
+  },
+  {
+    "text": "Convert 250 cm to metres",
+    "answer": "2.5",
+    "instruction": "Enter the value in metres"
+  },
+  {
+    "text": "What is the product of the first three prime numbers?",
+    "answer": "30",
+    "instruction": "Enter the product"
+  },
+  {
+    "text": "If 4 pencils cost ₦40, what is the cost of 1 pencil?",
+    "answer": "10",
+    "instruction": "Enter the cost in naira"
+  },
+  {
+    "text": "Express 18 as a product of its prime factors",
+    "answer": "2 × 3 × 3",
+    "instruction": "Enter the prime factorisation"
+  },
+  {
+    "text": "What is the average of 10, 20, 30, 40, and 50?",
+    "answer": "30",
+    "instruction": "Enter the average"
+  },
+  {
+    "text": "What is the volume of a cube with side 5 cm?",
+    "answer": "125",
+    "instruction": "Enter the volume in cubic centimetres"
+  },
+  {
+    "text": "How many sides has a hexagon?",
+    "answer": "6",
+    "instruction": "Enter the number of sides"
+  },
+  {
+    "text": "What is 1.5 × 100?",
+    "answer": "150",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "Write 0.125 as a fraction in simplest form",
+    "answer": "1/8",
+    "instruction": "Enter the fraction"
+  },
+  {
+    "text": "Solve: 2x + 3 = 11",
+    "answer": "4",
+    "instruction": "Enter the value of x"
+  },
+  {
+    "text": "Find the next even number after 98",
+    "answer": "100",
+    "instruction": "Enter the next even number"
+  },
+  {
+    "text": "What is the perimeter of a square with side 9 cm?",
+    "answer": "36",
+    "instruction": "Enter the perimeter in centimetres"
+  },
+  {
+    "text": "Change 3.75 to a mixed number",
+    "answer": "3 3/4",
+    "instruction": "Enter the mixed number"
+  },
+  {
+    "text": "What is the mean of 2, 4, 6, 8, and 10?",
+    "answer": "6",
+    "instruction": "Enter the mean"
+  },
+  {
+    "text": "What is the place value of 5 in 5,327?",
+    "answer": "5000",
+    "instruction": "Enter the place value"
+  },
+  {
+    "text": "Find the next number in the sequence: 1, 1, 2, 3, 5, ___",
+    "answer": "8",
+    "instruction": "Enter the next number"
+  },
+  {
+    "text": "How many centimetres are there in 3.6 metres?",
+    "answer": "360",
+    "instruction": "Enter the number of centimetres"
+  },
+  {
+    "text": "What is the HCF of 18 and 24?",
+    "answer": "6",
+    "instruction": "Enter the HCF"
+  },
+  {
+    "text": "A bag contains 3 red balls, 4 green balls, and 5 blue balls. How many balls are there altogether?",
+    "answer": "12",
+    "instruction": "Enter the total number of balls"
+  },
+  {
+    "text": "What is 15% of 200?",
+    "answer": "30",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "What is the area of a square with side length 7 cm?",
+    "answer": "49",
+    "instruction": "Enter the area in square centimetres"
+  },
+  {
+    "text": "Convert 0.75 to a percentage",
+    "answer": "75%",
+    "instruction": "Enter the percentage"
+  },
+  {
+    "text": "Solve: 3(x - 2) = 9",
+    "answer": "5",
+    "instruction": "Enter the value of x"
+  },
+  {
+    "text": "A rectangle has length 12 cm and width 8 cm. Find its area",
+    "answer": "96",
+    "instruction": "Enter the area in square centimetres"
+  },
+  {
+    "text": "How many degrees are in a right angle?",
+    "answer": "90",
+    "instruction": "Enter the number of degrees"
+  },
+  {
+    "text": "Simplify: 4/8",
+    "answer": "1/2",
+    "instruction": "Enter the simplified fraction"
+  },
+  {
+    "text": "How many days are there in a leap year?",
+    "answer": "366",
+    "instruction": "Enter the number of days"
+  },
+  {
+    "text": "Multiply: 0.6 × 0.5",
+    "answer": "0.3",
+    "instruction": "Enter the result"
+  },
+  {
+    "text": "Convert 1.25 to a mixed number",
+    "answer": "1 1/4",
+    "instruction": "Enter the mixed number"
+  },
+  {
+    "text": "What is the mode of the following numbers: 4, 6, 4, 7, 8, 4, 9?",
+    "answer": "4",
+    "instruction": "Enter the mode"
+  },
+  {
+    "text": "If 5x = 30, find x",
+    "answer": "6",
+    "instruction": "Enter the value of x"
+  },
+  {
+    "text": "Write 3/5 as a percentage",
+    "answer": "60%",
+    "instruction": "Enter the percentage"
+  },
+  {
+    "text": "What is the total of the interior angles of a triangle?",
+    "answer": "180",
+    "instruction": "Enter the total in degrees"
+  },
+  {
+    "text": "Convert 2.5 kg to grams",
+    "answer": "2500",
+    "instruction": "Enter the value in grams"
+  },
+  {
+    "text": "What is the perimeter of a rectangle with length 10 cm and width 6 cm?",
+    "answer": "32",
+    "instruction": "Enter the perimeter in centimetres"
+  },
+  {
+    "text": "Round 87.6 to the nearest ten",
+    "answer": "90",
+    "instruction": "Enter the rounded number"
+  },
+  {
+    "text": "What is the sum of the first 5 even numbers?",
+    "answer": "30",
+    "instruction": "Enter the sum"
+  }
+  ],
+  
+  senior: [
+    {
+      text: "Find the median of 5, 9, 1, 10, 3, 8, 9, 2, 4, 5, 5, 5, 7, 3 and 6",
+      answer: "5",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "Find m such that (m + &radic;3)(1 &minus; &radic;3)&sup2; = 6 &minus; 2&radic;3",
+      answer: "2",
+      instruction: "Enter only the numerical value of m"
+    },
+    {
+      text: "If √(x<sup>2</sup> - 9) = -x + 1, solve for x",
+      answer: "2",
+      instruction: "Enter only the numerical value of x"
+    },
+    {
+      text: "What is the mean deviation of 3, 5, 8, 11, 12 and 21?",
+      answer: "4.7",
+      instruction: "Enter the answer rounded to one decimal place"
+    },
+    {
+      text: "Find the solution of the equation x &minus; 8&radic;x + 15 = 0",
+      answer: "9.25",
+      instruction: "Enter the numerical answer with two decimal places"
+    },
+    {
+      text: "The mean of 24, 44, 3&minus;2, 24 and 14 is?",
+      answer: "1",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "The arithmetic mean of the marks 5, 3, 9, 4, 7, 8, 6, 2, 7, 8, 4, 5, 2, 1, 0, 6, 9, 0 is?",
+      answer: "5",
+      instruction: "Enter the mean rounded to the nearest whole number"
+    },
+    {
+      text: "The mean of the numbers 1, 2, 1, 0, 0, 9, 1, 4, 8, 0, 8, 1, 2 and 1.1 is?",
+      answer: "1.05",
+      instruction: "Enter the mean with two decimal places"
+    },
+    {
+      text: "Find y, if &radic;12 &minus; &radic;147 + y&radic;3 = 0",
+      answer: "5",
+      instruction: "Enter only the numerical value of y"
+    },
+    {
+      text: "Thirty boys and x girls sat for a test. The mean of the boys' scores was 6 and the girls' was 8. Find x if the total score was 468",
+      answer: "36",
+      instruction: "Enter only the numerical value of x"
+    },
+    {
+      text: "If (2x+3)&sup3; = 125, find the value of x",
+      answer: "1",
+      instruction: "Enter only the numerical value of x"
+    },
+    {
+      text: "Calculate the mean deviation of the sets of numbers 7, 3, 14, 9, 7 and 8",
+      answer: "2.33",
+      instruction: "Enter the answer rounded to two decimal places"
+    },
+    {
+      text: "The mean height and range of heights 1.35, 1.25, 1.35, 1.40, 1.35, 1.45, 1.50, 1.35, 1.50 and 1.20 are m and r respectively. Find m + 2r",
+      answer: "3.35",
+      instruction: "Enter the answer with two decimal places"
+    },
+    {
+      text: "The mean of the numbers 1.2, 1.0, 0.4, 1.4, 0.8, 0.8, 1.2 and 1.1 is?",
+      answer: "1.0",
+      instruction: "Enter the mean with one decimal place"
+    },
+    {
+      text: "The arithmetic mean of the ages of 30 pupils in a class is 15.3 years. One boy leaves and one girl is enrolled, and the new average age becomes 15.2 years. How much older is the boy than the girl?",
+      answer: "3",
+      instruction: "Enter only the numerical difference in years"
+    },
+    {
+      text: "Simplify (√<sup>1</sup>/<sub>2</sub> - √3) ÷ (√12 + √3)",
+      answer: "1",
+      instruction: "Enter the simplified numerical answer"
+    },
+    {
+      text: "A ship sails from port P on a bearing of 050° for 80km to port Q, then changes course to a bearing of 120° for 60km to port R. Calculate the:<br>(a) Distance between P and R<br>(b) Bearing of R from P",
+      answer: "a)113.6km b)078.7",
+      instruction: "Format answers to 1 decimal place e.g. a)123.4km b)012.3"
+    },
+    {
+      text: "Two towns A and B are 300km apart. Town B is due East of town A. A third town C is on a bearing of 060° from A and 345° from B. Calculate the distance between:<br>(a) A and C<br>(b) B and C",
+      answer: "a)259.8km b)150km",
+      instruction: "Format answers to 1 decimal place e.g. a)123.4km b)112.3km"
+    },
+    {
+      text: "An aircraft flies from airport X (5°N, 10°W) to airport Y (5°N, 20°E) along the parallel of latitude. Calculate the distance covered (take R=6370km)",
+      answer: "3336.7km",
+      instruction: "Format answers as:[distance]km (round to 1 decimal place)"
+    },
+    {
+      text: "A surveyor walks 500m on a bearing of 140°, then 700m on a bearing of 250°. Calculate the bearing of her final position from the start",
+      answer: "205.4",
+      instruction: "Enter only the numerical value, rounded to 1 decimal place"
+    },
+    {
+      text: "From a point P, the bearing of two points Q and R are 320° and 060° respectively. If PQ = 15km, PR = 10km, and angle QPR = 80°, calculate the bearing of R from Q",
+      answer: "093.3",
+      instruction: "Enter only the numerical value in 3-digit bearing, rounded to 1 decimal place, e.g. 070.5"
+    },
+    {
+      text: "A ship sails 150km on a bearing of 220°, then 200km on a bearing of 320°. Calculate how far west the ship is from its starting point",
+      answer: "191.5km",
+      instruction: "Format answers as: [distance]km (round to 1 decimal place) e.g. 26.5km"
+    },
+    {
+      text: "Three villages P, Q, and R are such that Q is 12km due east of P and R is 15km from P on a bearing of 310°. Calculate:<br>(a) The distance between Q and R<br>(b) The bearing of R from Q",
+      answer: "a)14.8km b)333.4",
+      instruction: "Format answers to 1 decimal place e.g. a)123.4km b)012.3"
+    },
+    {
+      text: "An aircraft flies 500km on a bearing of 040°, then 600km on a bearing of 150°. Calculate the distance from its starting point",
+      answer: "782.6km",
+      instruction: "Format answers as: [distance]km (round to 1 decimal place) e.g. 312.2km"
+    },
+    {
+      text: "From a lighthouse L, the bearing of two ships A and B are 205° and 295° respectively. If LA = 8km and LB = 6km, calculate the bearing of B from A",
+      answer: "351.8",
+      instruction: "Enter only the numerical value (round to 1 decimal place)"
+    },
+    {
+      text: "A hiker walks 8km on a bearing of 035°, then 12km on a bearing of 125°. Calculate how far east the hiker is from the starting point.",
+      answer: "14.6km",
+      instruction: "Format answers as: [distance]km (round to 1 decimal place) e.g. 22.3km"
+    },
+    {
+      text: "Two points A and B are 20km apart, with B northeast of A. Point C is 15km from A and 12km from B. Calculate:<br>(a) The bearing of B from A<br>(b) The bearing of C from A",
+      answer: "a)045 b)062.7",
+      instruction: "Enter only the numerical value (round to 1 decimal place) e.g. 'a)033 b)055.4'"
+    },
+    {
+      text: "A ship sails 100km on a bearing of 210°, then 150km on a bearing of 300°. Calculate:<br>(a) The distance from its starting point<br>(b) The bearing of its starting point from its final position",
+      answer: "a)130.4km b)036.9",
+      instruction: "Format answers as: a)[distance]km b)[bearing] (round to 1 decimal place) 'a)033 b)055.4'"
+    },
+    {
+      text: "The 5th term of an AP is 17 and the 9th term is 29. Find the sum of the first 20 terms.",
+      answer: "810",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "In an AP, the 8th term is twice the 4th term, and the 20th term is 44. Find the first term and common difference (format: a,d).",
+      answer: "2,3",
+      instruction: "Enter as two numbers separated by comma (e.g., '7,8')"
+    },
+    {
+      text: "The sum of the first 10 terms of an AP is 155 and the sum of the next 10 terms is 555. Find the first term.",
+      answer: "5",
+      instruction: "Enter only the numerical value"
+    },
+    {
+      text: "Three numbers in AP have a sum of 24 and product of 440. Find the largest of these numbers.",
+      answer: "11",
+      instruction: "Enter only the numerical value"
+    },
+    {
+      text: "If the pth term of an AP is q and the qth term is p, find the (p+q)th term.",
+      answer: "0",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "In an AP of 25 terms, the 13th term is 38. What is the sum of all terms?",
+      answer: "950",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "The 4th term of an AP is 6 times the first term, and the 10th term is 30. Find the sum of the first 12 terms.",
+      answer: "234",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "If the sum of the first 6 terms of an AP is 42 and the sum of the first 10 terms is 100, find the sum of the first 20 terms.",
+      answer: "420",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "The interior angles of a polygon are in AP with common difference 5°. If the smallest angle is 120°, how many sides does the polygon have?",
+      answer: "9",
+      instruction: "Enter only the number of sides"
+    },
+    {
+      text: "An AP has first term 7 and common difference 4. Another AP has first term 3 and common difference 5. After how many terms will their sums be equal?",
+      answer: "13",
+      instruction: "Enter only the numerical value"
+    },
+    {
+      text: "The 3rd term of a GP is 24 and the 6th term is 192. Find the 10th term.",
+      answer: "1536",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "A GP has first term 3 and common ratio 2. Find the sum of the first 8 terms.",
+      answer: "765",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "The sum to infinity of a GP is 60 and the first term is 20. Find the common ratio.",
+      answer: "0.666",
+      instruction: "Enter the ratio rounded to 3 decimal places (e.g. 0.123)"
+    },
+    {
+      text: "The 2nd term of a GP is 12 and the 4th term is 108. Find the sum of the first 5 terms.",
+      answer: "363",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "If 2, x, 18 form a geometric progression, find the positive value of x.",
+      answer: "6",
+      instruction: "Enter only the positive numerical value"
+    },
+    {
+      text: "A GP has sum to infinity of 81 and the sum of the first 3 terms is 57. Find the first term.",
+      answer: "27",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "The product of the first three terms of a GP is 216 and their sum is 21. Find the common ratio if r > 1.",
+      answer: "2",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "Find the number of terms in the GP: 5, 10, 20, ..., 5120.",
+      answer: "11",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "A ball drops from 128m and rebounds 0.5 of its previous height. Find the total distance traveled when it hits the ground for the 6th time.",
+      answer: "378m",
+      instruction: "Enter the distance in meters e.g. 222m"
+    },
+    {
+      text: "The sum of the first n terms of a GP is 255. If the first term is 1 and the common ratio is 2, find n.",
+      answer: "8",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "Three consecutive terms of a GP are x+2, x, x-3. Find all possible values of x.",
+      answer: "6",
+      instruction: "Enter only the positive numerical value"
+    },
+    {
+      text: "A GP has first term a and common ratio r. If the 5th term is 32 and the 8th term is 256, find the value of a^2 + r^2.",
+      answer: "20",
+      instruction: "Enter only the numerical answer"
+    },
+    {
+      text: "Find the least positive residue of 7<sup>23</sup> modulo 13",
+      answer: "6",
+      instruction: "Enter only the numerical answer (0-12)"
+    },
+    {
+      text: "Solve for x in the congruence 5x ≡ 8 (mod 17)",
+      answer: "5",
+      instruction: "Enter the smallest positive integer solution"
+    },
+    {
+      text: "Determine the inverse of 9 modulo 20",
+      answer: "9",
+      instruction: "Enter the smallest positive inverse"
+    },
+    {
+      text: "Find all solutions to x<sup>2</sup> ≡ 4 (mod 15)",
+      answer: "2,7,8,13",
+      instruction: "Enter solutions separated by commas, no spaces"
+    },
+    {
+      text: "Solve the system: x ≡ 3 (mod 5) and x ≡ 4 (mod 7)",
+      answer: "18",
+      instruction: "Enter the smallest positive solution"
+    },
+    {
+      text: "Find the last two digits of 7<sup>256</sup> (i.e., compute 7<sup>256</sup> mod 100)",
+      answer: "1",
+      instruction: "Enter the two-digit result (00-99)"
+    },
+    {
+      text: "For which positive integers n does 2<sup>n</sup> ≡ 1 (mod 7) hold?",
+      answer: "3,6,9,12",
+      instruction: "Enter the first four solutions separated by commas"
+    },
+    {
+      text: "Find the order of 5 modulo 17 (smallest k such that 5<sup>k</sup> ≡ 1 mod 17)",
+      answer: "16",
+      instruction: "Enter the smallest positive exponent"
+    },
+    {
+      text: "Solve the quadratic congruence x<sup>2</sup> + 3x + 2 ≡ 0 (mod 7)",
+      answer: "5,6",
+      instruction: "Enter solutions separated by comma, no spaces"
+    },
+    {
+      text: "Find all primitive roots modulo 13 (enter the smallest two)",
+      answer: "2,6",
+      instruction: "Enter two smallest roots separated by comma, no spaces"
+    },
+    {
+      text: "Solve for x: x² - 5x + 6 = 0",
+      answer: "2,3",
+      instruction: "Enter both roots separated by comma (e.g. '2,3')"
+    },
+    {
+      text: "The product of two consecutive positive integers is 132. Find the integers.",
+      answer: "11,12",
+      instruction: "Enter the two numbers separated by comma (smaller first)"
+    },
+    {
+      text: "Solve the equation: 2x² - 7x - 15 = 0",
+      answer: "5,-1.5",
+      instruction: "Enter both roots separated by comma"
+    },
+    {
+      text: "A rectangle has length 3cm longer than its width. If the area is 54cm², find its dimensions.",
+      answer: "6cm,9cm",
+      instruction: "Enter width,length separated by comma (in cm) e.g. 3cm,7cm"
+    },
+    {
+      text: "Find the roots of the equation: 3x² + 10x - 8 = 0",
+      answer: "0.67,-4",
+      instruction: "Enter roots rounded to 2 decimal places, separated by comma"
+    },
+    {
+      text: "The sum of a number and its reciprocal is 2.9. Find the number.",
+      answer: "0.4,2.5",
+      instruction: "Enter both possible solutions rounded to 1 decimal place"
+    },
+    {
+      text: "Solve: x² - 8x + 15 = 0",
+      answer: "3,5",
+      instruction: "Enter both roots separated by comma"
+    },
+    {
+      text: "A right triangle has hypotenuse 13cm and one leg 7cm shorter than the other. Find the length of the shorter leg.",
+      answer: "5",
+      instruction: "Enter the length in cm (whole number)"
+    },
+    {
+      text: "Find the positive solution to: x² + 4x - 21 = 0",
+      answer: "3",
+      instruction: "Enter only the positive root"
+    },
+    {
+      text: "The area of a square is reduced by 16cm² when one side is decreased by 2cm. Find the original side length.",
+      answer: "5cm",
+      instruction: "Enter the original length in cm e.g. 8cm"
+    },
+    {
+      text: "Solve the equation: 5x² - 13x + 6 = 0",
+      answer: "0.6,2",
+      instruction: "Enter both roots separated by comma (1 decimal place)"
+    },
+    {
+      text: "A number exceeds its square root by 6. Find the number.",
+      answer: "9",
+      instruction: "Enter the whole number solution"
+    },
+    {
+      text: "Find the roots of: x² - 9x + 20 = 0",
+      answer: "4,5",
+      instruction: "Enter both roots separated by comma"
+    },
+    {
+      text: "The sum of the squares of two consecutive even numbers is 340. Find the numbers.",
+      answer: "12,14",
+      instruction: "Enter both numbers separated by comma (smaller first)"
+    },
+    {
+      text: "Solve: 4x² - 12x + 9 = 0",
+      answer: "1.5",
+      instruction: "Enter the repeated root (1 decimal place)"
+    },
+    {
+      text: "Solve the simultaneous equations: <br>3x + 2y = 16 <br>7x - y = 19",
+      answer: "x=3,y=2",
+      instruction: "Enter answers as x=value,y=value (no spaces), x=1,y=2"
+    },
+    {
+      text: "Find x and y if: <br>5x - 3y = 11 <br>2x + 4y = 16",
+      answer: "x=4,y=3",
+      instruction: "Enter answers as x=value,y=value (no spaces)"
+    },
+    {
+      text: "A shop sells pens for $x and books for $y. If 3 pens and 2 books cost $16, while 5 pens and 3 books cost $25, find the price of each item.",
+      answer: "x=2,y=5",
+      instruction: "Enter prices as x=pen price,y=book price (no spaces) x=1,y=2"
+    },
+    {
+      text: "Solve: <br>x² + y = 14 <br>x + y = 10",
+      answer: "x=2,y=8 or x=-4,y=14",
+      instruction: "Enter all possible solutions separated by 'or', e.g. x=1,y=2 or x=1,y=2"
+    },
+    {
+      text: "The sum of two numbers is 35 and their difference is 11. Find the numbers.",
+      answer: "23,12",
+      instruction: "Enter the two numbers separated by comma  (no spaces)"
+    },
+    {
+      text: "Solve: <br>2x + 3y = 7 <br>4x - 5y = -9",
+      answer: "x=0.5,y=2",
+      instruction: "Enter answers as x=value,y=value  (no spaces; decimals allowed) e.g. x=1.5,y=2"
+    },
+    {
+      text: "A rectangle has perimeter 46cm. If the length is 5cm more than twice the width, find its dimensions.",
+      answer: "7,16",
+      instruction: "Enter width,length separated by comma (no spaces: e.g. 7,12)"
+    },
+    {
+      text: "Solve: <br>y = 2x - 3 <br>x² + y² = 5",
+      answer: "x=2,y=1 or x=-0.8,y=-4.6",
+      instruction: "Enter all possible solutions separated by 'or' rounded to 1 decimal place"
+    },
+    {
+      text: "Five notebooks and three pens cost $28. Two notebooks and six pens cost $26. Find the cost of each.",
+      answer: "5,1",
+      instruction: "Enter notebook price,pen price separated by comma (no spaces e.g. 5,6)"
+    },
+    {
+      text: "Solve: <br>3x - 2y = 8 <br>6x + 4y = 20",
+      answer: "x=3,y=0.5",
+      instruction: "Enter answers as x=value,y=value (no spaces e.g. x=1,y=2)"
+    },
+    {
+      text: "The sum of ages of a father and son is 50. In 5 years, the father will be 3 times as old as the son. Find their current ages.",
+      answer: "40,10",
+      instruction: "Enter father's age,son's age separated by comma (no spaces e.g. 1,2)"
+    },
+    {
+      text: "Solve: <br>2x + y = 7 <br>x² - y = 2",
+      answer: "x=3,y=1 or x=-3,y=13",
+      instruction: "Enter all possible solutions separated by 'or'"
+    },
+    {
+      text: "A business invests $6000 in two schemes. Scheme A yields 5% and scheme B yields 8%. If total annual income is $390, how much was invested in each?",
+      answer: "3000,3000",
+      instruction: "Enter amount in A,amount in B separated by comma, no spaces e.g. 6000,2500"
+    },
+    {
+      text: "Solve: <br>4x - 3y = 0 <br>2x + 5y = 26",
+      answer: "x=3,y=4",
+      instruction: "Enter answers as x=value,y=value (no spaces) e.g. x=1,y=2"
+    },
+    {
+      text: "A car travels 300km partly at x km/h and partly at y km/h. It takes 5 hours total. If it traveled at x km/h for the whole distance, it would take 1 hour less. Find x and y.",
+      answer: "75,50",
+      instruction: "Enter x,y separated by comma, no spaces e.g. x=1,y=2"
+    },
+    {
+      text: "A car travels 240km in 3 hours. If it continues at the same speed, how long will it take to travel 400km?",
+      answer: "5",
+      instruction: "Enter the number of hours (whole number only, e.g. 8)"
+    },
+    {
+      text: "The sum of three consecutive odd numbers is 63. What is the largest of these numbers?",
+      answer: "23",
+      instruction: "Enter the largest number"
+    },
+    {
+      text: "A rectangle has length 8cm longer than its width. If the perimeter is 60cm, find its area.",
+      answer: "209",
+      instruction: "Enter the numerical value only e.g. 111"
+    },
+    {
+      text: "If 12 workers can complete a project in 20 days, how many workers are needed to complete it in 15 days?",
+      answer: "16",
+      instruction: "Enter the number of workers"
+    },
+    {
+      text: "The ratio of boys to girls in a school is 5:3. If there are 240 more boys than girls, how many students are in the school?",
+      answer: "960",
+      instruction: "Enter the total number of students"
+    },
+    {
+      text: "A shop sells an item for $800 at 25% profit. What was the cost price of the item?",
+      answer: "640",
+      instruction: "Enter the cost price in dollars (no symbols)"
+    },
+    {
+      text: "Two trains start from the same station at the same time. One travels east at 60km/h and the other west at 75km/h. After how many hours will they be 540km apart?",
+      answer: "4",
+      instruction: "Enter the number of hours"
+    },
+    {
+      text: "A man is 4 times as old as his son. In 5 years, he will be 3 times as old. How old is the son now?",
+      answer: "10",
+      instruction: "Enter the son's current age"
+    },
+    {
+      text: "The population of a town increases by 15% annually. If the current population is 20,000, what will it be after 2 years?",
+      answer: "26450",
+      instruction: "Enter the population (no commas e.g. 34321)"
+    },
+    {
+      text: "A cube has a volume of 512 cubic cm. What is the length of its diagonal?",
+      answer: "8cm",
+      instruction: "Enter the answer in cm, e.g. 2cm"
+    },
+    {
+      text: "In a class of 50 students, 30 offer Physics and 25 offer Chemistry. If 10 offer neither, how many offer both subjects?",
+      answer: "15",
+      instruction: "Enter the number of students"
+    },
+    {
+      text: "A ladder 10m long leans against a wall. If the foot of the ladder is 6m from the wall, how high up the wall does it reach?",
+      answer: "8m",
+      instruction: "Enter the height in meters, e.g. 9m"
+    },
+    {
+      text: "The sum of the interior angles of a regular polygon is 1260 degrees. How many sides does it have?",
+      answer: "9",
+      instruction: "Enter the number of sides"
+    },
+    {
+      text: "A principal of $5000 yields $1000 simple interest in 4 years. What is the interest rate per annum?",
+      answer: "5",
+      instruction: "Enter the percentage rate (number only)"
+    },
+    {
+      text: "If 3x + 2y = 16 and x - y = 3, find the value of y.",
+      answer: "1.4",
+      instruction: "Enter the value of y (1 decimal place)"
+    },
+    {
+      text: "A bag contains 4 red, 5 blue and 6 green balls. If one ball is picked at random, what is the probability it is not blue?",
+      answer: "2/3",
+      instruction: "Enter as simplified fraction a/b"
+    },
+    {
+      text: "The mean of five numbers is 12. If four numbers are 8, 10, 14 and 16, find the fifth number.",
+      answer: "12",
+      instruction: "Enter the missing number"
+    },
+    {
+      text: "A cylindrical tank has radius 7m and height 10m. Calculate its volume in liters (1m³ = 1000L).",
+      answer: "1540000",
+      instruction: "Enter the volume in liters (no commas) e.g. 23456"
+    },
+    {
+      text: "A trader bought 100 oranges at 5 for $2 and sold them at 4 for $3. What is his percentage profit?",
+      answer: "87.5",
+      instruction: "Enter the percentage rate to 1 decimal place (number only)"
+    },
+    {
+      text: "The 3rd and 6th terms of a geometric progression are 24 and 192 respectively. Find the first term.",
+      answer: "6",
+      instruction: "Enter the first term"
+    },
+    {
+      text: "A man walks 800m north then 600m east. How far is he from his starting point?",
+      answer: "1000m",
+      instruction: "Enter distance in meters, e.g. 300m"
+    },
+    {
+      text: "If log₂(x + 3) = 4, find the value of x.",
+      answer: "13",
+      instruction: "Enter the value of x"
+    },
+    {
+      text: "The hypotenuse of a right-angled triangle is 25cm. If one side is 15cm, find the length of the third side.",
+      answer: "20cm",
+      instruction: "Enter the length in cm, e.g. 40cm"
+    },
+    {
+      text: "A clock shows 2:15. What is the angle between the hour and minute hands?",
+      answer: "22.5",
+      instruction: "Enter the angle to 1 decimal place (numbers only)"
+    },
+    {
+      text: "The sum of the first n terms of an AP is 3n² + 5n. Find the 10th term.",
+      answer: "62",
+      instruction: "Enter the 10th term"
+    },
+    {
+      text: "A committee of 4 is to be formed from 7 men and 5 women. In how many ways can this be done if there must be at least 2 women?",
+      answer: "455",
+      instruction: "Enter the number of ways"
+    },
+    {
+      text: "The solution set of the inequality 3x - 5 < x + 7 is?",
+      answer: "x<6",
+      instruction: "Enter in the form x<b"
+    },
+    {
+      text: "A car depreciates by 20% annually. If its current value is $640,000, what was its value 2 years ago?",
+      answer: "1000000",
+      instruction: "Enter the value in dollars (no commas) e.g. 444444"
+    },
+    {
+      text: "If 5^x = 3125, find the value of x.",
+      answer: "5",
+      instruction: "Enter the value of x"
+    },
+    {
+      text: "The area of a rhombus is 120cm² and one diagonal is 16cm. Find the length of the other diagonal.",
+      answer: "15cm",
+      instruction: "Enter the length in cm, e.g. 55cm"
+    },
+    {
+      text: "A survey shows 60% of students play football and 50% play basketball. If 20% play neither, what percentage play both?",
+      answer: "30",
+      instruction: "Enter the percentage (number only)"
+    }
+  ]
+};
+
+// ===== APPLICATION CODE =====
+const formSection = document.querySelector('.form-section');
+const quizSection = document.querySelector('.quiz-section');
+const resultSection = document.querySelector('.result-section');
+const practiceForm = document.getElementById('practiceForm');
+const quizForm = document.getElementById('quizForm');
+const timerEl = document.getElementById('timer');
+const submitQuizBtn = document.getElementById('submitQuiz');
+const questionCountInput = document.getElementById('questionCount');
+const estimatedTimeEl = document.getElementById('estimatedTime');
+
+let timer, timeLeft = 0;
+let studentData = {};
+let selectedQuestions = [];
+let studentAnswers = [];
+let currentQuestionIndex = 0;
+
+// Calculate estimated time when question count changes
+questionCountInput.addEventListener('input', function() {
+  const count = parseInt(this.value) || 0;
+  const minutes = Math.ceil(count * 0.5); // 30 seconds per question
+  estimatedTimeEl.textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+});
+
+// Form submission handler
+practiceForm.onsubmit = function(e) {
+  e.preventDefault();
+
+  const questionCount = parseInt(questionCountInput.value);
+  if (questionCount < 1 || questionCount > 120) {
+    alert('Please select between 1 and 120 questions');
+    return;
+  }
+
+  const category = document.getElementById('studentCategory').value;
+  if (!category) {
+    alert('Please select a category');
+    return;
+  }
+
+  studentData = {
+    name: document.getElementById('studentName').value,
+    class: document.getElementById('studentClass').value,
+    category: category,
+    questionCount: questionCount,
+    startTime: new Date().toISOString()
+  };
+
+  // Select random questions from the appropriate category
+  selectedQuestions = [...practiceQuestions[category]]
+    .sort(() => 0.5 - Math.random())
+    .slice(0, questionCount);
+  
+  // Calculate time (30 seconds per question)
+  timeLeft = questionCount * 30;
+  
+  // Initialize student answers array
+  studentAnswers = Array(selectedQuestions.length).fill(null).map(() => ({
+    selected: '',
+    isCorrect: false
+  }));
+  
+  // Render the first question
+  renderCurrentQuestion();
+  
+  formSection.classList.add('hidden');
+  quizSection.classList.remove('hidden');
+  startTimer();
+};
+
+function renderCurrentQuestion() {
+  const question = selectedQuestions[currentQuestionIndex];
+  
+  quizForm.innerHTML = `
+    <div class="question" data-id="${currentQuestionIndex}">
+      <p>Question ${currentQuestionIndex + 1} of ${selectedQuestions.length}</p>
+      <p>${question.text}</p>
+      <p class="instruction">${question.instruction}</p>
+      <input type="text" id="currentAnswer" 
+             value="${studentAnswers[currentQuestionIndex].selected}" 
+             placeholder="Your answer" 
+             style="width: 100%; padding: 8px; margin-top: 5px;">
+    </div>
+    <div class="navigation-buttons">
+      <button type="button" id="prevBtn" class="nav-btn" ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+        Previous
+      </button>
+      ${currentQuestionIndex < selectedQuestions.length - 1 ? 
+        `<button type="button" id="nextBtn" class="nav-btn">
+          Next
+        </button>` : 
+        `<button type="button" id="submitBtn" class="nav-btn submit">
+          Submit
+        </button>`}
+    </div>
+  `;
+  
+  function renderCurrentQuestion() {
+  const question = selectedQuestions[currentQuestionIndex];
+  
+  quizForm.innerHTML = `
+    <div class="question" data-id="${currentQuestionIndex}">
+      <p>Question ${currentQuestionIndex + 1} of ${selectedQuestions.length}</p>
+      <p>${question.text}</p>
+      <p class="instruction">${question.instruction}</p>
+      <input type="text" id="currentAnswer" 
+             value="${studentAnswers[currentQuestionIndex].selected}" 
+             placeholder="Your answer"
+             autocomplete="off">
+    </div>
+    <div class="navigation-buttons">
+      <button type="button" id="prevBtn" class="nav-btn" ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+        ← Previous
+      </button>
+      ${currentQuestionIndex < selectedQuestions.length - 1 ? 
+        `<button type="button" id="nextBtn" class="nav-btn">
+          Next →
+        </button>` : 
+        `<button type="button" id="finalSubmitBtn" class="nav-btn submit">
+          Submit Practice
+        </button>`}
+    </div>
+  `;
+
+  // Event listeners
+  document.getElementById('prevBtn')?.addEventListener('click', goToPreviousQuestion);
+  document.getElementById('nextBtn')?.addEventListener('click', goToNextQuestion);
+  document.getElementById('finalSubmitBtn')?.addEventListener('click', submitQuiz);
+  
+  // Also make the main submit button work
+  submitQuizBtn.onclick = submitQuiz;
+  
+  // Focus management
+  document.getElementById('currentAnswer')?.focus();
+}
+  
+  // Add event listeners for navigation
+  document.getElementById('prevBtn')?.addEventListener('click', goToPreviousQuestion);
+  document.getElementById('nextBtn')?.addEventListener('click', goToNextQuestion);
+  document.getElementById('submitBtn')?.addEventListener('click', submitQuiz);
+  
+  // Focus on answer input
+  document.getElementById('currentAnswer')?.focus();
+}
+
+function goToPreviousQuestion() {
+  saveCurrentAnswer();
+  currentQuestionIndex--;
+  renderCurrentQuestion();
+}
+
+function goToNextQuestion() {
+  saveCurrentAnswer();
+  currentQuestionIndex++;
+  renderCurrentQuestion();
+}
+
+function saveCurrentAnswer() {
+  const answerInput = document.getElementById('currentAnswer');
+  if (answerInput) {
+    const answer = answerInput.value.trim();
+    const question = selectedQuestions[currentQuestionIndex];
+    
+    studentAnswers[currentQuestionIndex] = {
+      selected: answer,
+      isCorrect: answer.toLowerCase() === question.answer.toString().toLowerCase()
+    };
+  }
+}
+
+function startTimer() {
+  // Update timer display immediately
+  updateTimerDisplay();
+  
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      submitQuiz();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  
+  // Change color when time is running out
+  if (timeLeft <= 60) { // 1 minute left
+    timerEl.style.color = '#FF0000';
+    timerEl.style.fontWeight = 'bold';
+  }
+}
+
+function submitQuiz() {
+	console.log("Submit triggered", studentAnswers);
+  // Save current answer before submitting
+  saveCurrentAnswer();
+  
+  // Validate all questions are answered
+  const unanswered = studentAnswers.filter(a => !a.selected.trim()).length;
+  if (unanswered > 0 && !confirm(`You have ${unanswered} unanswered questions. Submit anyway?`)) {
+    return;
+  }
+
+  clearInterval(timer);
+  
+  // Prepare complete results
+  const completeAnswers = selectedQuestions.map((q, i) => ({
+    question: q.text,
+    selected: studentAnswers[i].selected,
+    correct: q.answer,
+    isCorrect: studentAnswers[i].isCorrect
+  }));
+
+  const score = completeAnswers.filter(a => a.isCorrect).length;
+  const percentage = ((score / selectedQuestions.length) * 100).toFixed(2);
+
+  // Update student data
+  studentData = {
+    ...studentData,
+    endTime: new Date().toISOString(),
+    answers: completeAnswers,
+    score,
+    percentage
+  };
+
+  showResults(score, percentage, completeAnswers);
+  sendResultsToEmail(studentData);
+}
+
+
+</script>
+</body>
+</html>
