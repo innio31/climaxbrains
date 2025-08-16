@@ -418,6 +418,40 @@
         const database = firebase.database();
         const auth = firebase.auth();
 
+        // Firebase Authentication Check
+auth.onAuthStateChanged((user) => {
+    if (!user) {
+        // User is not logged in, redirect to login page
+        window.location.href = 'admin-login.html';
+    } else {
+        // Optional: Verify user has admin privileges
+        user.getIdTokenResult().then((idTokenResult) => {
+            // Check for custom admin claim if you've set it up
+            if (!idTokenResult.claims.admin) {
+                // User doesn't have admin privileges
+                auth.signOut().then(() => {
+                    window.location.href = 'admin-login.html?error=unauthorized';
+                });
+            }
+            // If claims are OK, proceed to load admin content
+            loadAdminContent();
+        }).catch((error) => {
+            console.error('Error checking admin status:', error);
+            auth.signOut().then(() => {
+                window.location.href = 'admin-login.html?error=auth_error';
+            });
+        });
+    }
+});
+
+function loadAdminContent() {
+    // All your existing admin page initialization code goes here
+    // This only runs after successful authentication
+    loadResults();
+    updateAnalytics();
+    // etc...
+}
+
         // DOM Elements
         const resultsTable = document.getElementById('resultsTable');
         const totalResults = document.getElementById('totalResults');
@@ -1090,4 +1124,5 @@
     </script>
 </body>
 </html>
+
 
