@@ -3,406 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal - Climax Brains Academy</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Exam Results Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-purple: #6a0dad;
-            --secondary-wine: #722f37;
-            --accent-gold: #d4af37;
-            --light-purple: #9c6fdc;
-            --light-wine: #a05252;
+            --primary-color: #6a0dad;
+            --secondary-color: #722f37;
         }
-        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
             background-color: #f8f9fa;
         }
-        
-        .sidebar {
-            background: linear-gradient(to bottom, var(--primary-purple), var(--secondary-wine));
+        .header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             color: white;
-            height: 100vh;
-            position: fixed;
-            width: 250px;
             padding: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-        
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-        }
-        
-        .navbar {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .logo-container {
-            text-align: center;
+            border-radius: 10px;
             margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
-        
-        .logo {
-            height: 60px;
-            margin-bottom: 10px;
-        }
-        
-        .nav-link {
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 5px;
-            border-radius: 5px;
-            padding: 10px 15px;
-            transition: all 0.3s;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
-        
-        .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-        
         .card {
-            border: none;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-        
-        .card-header {
-            background-color: white;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            font-weight: 600;
-        }
-        
-        .badge-purple {
-            background-color: var(--primary-purple);
-        }
-        
-        .badge-wine {
-            background-color: var(--secondary-wine);
-        }
-        
-        .filter-container {
-            background-color: white;
-            padding: 15px;
+        .table-responsive {
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            overflow: hidden;
         }
-        
-        .result-row:hover {
-            background-color: #f8f9fa;
-            cursor: pointer;
+        .badge-primary {
+            background-color: var(--primary-color);
         }
-        
-        .score-cell {
-            font-weight: 600;
+        .badge-secondary {
+            background-color: var(--secondary-color);
         }
-        
-        .score-high {
-            color: #28a745;
-        }
-        
-        .score-medium {
-            color: #ffc107;
-        }
-        
-        .score-low {
-            color: #dc3545;
-        }
-        
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-        }
+        .score-high { color: #28a745; font-weight: bold; }
+        .score-medium { color: #ffc107; font-weight: bold; }
+        .score-low { color: #dc3545; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo-container">
-            <img src="school-logo.png" alt="School Logo" class="logo">
-            <h5>Climax Brains Academy</h5>
-            <p class="small">Admin Portal</p>
+    <div class="container">
+        <div class="header text-center">
+            <h1><i class="fas fa-graduation-cap"></i> Exam Results Admin</h1>
+            <p class="mb-0">View and manage examination results</p>
         </div>
-        
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" href="#results" data-bs-toggle="tab">
-                    <i class="fas fa-list"></i> Exam Results
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#analytics" data-bs-toggle="tab">
-                    <i class="fas fa-chart-bar"></i> Analytics
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#settings" data-bs-toggle="tab">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-            </li>
-            <li class="nav-item mt-4">
-                <a class="nav-link" href="#" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </li>
-        </ul>
-    </div>
-    
-    <div class="main-content">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
-            <div class="container-fluid">
-                <span class="navbar-brand">Exam Results Dashboard</span>
-                <div class="d-flex align-items-center">
-                    <span class="me-3 d-none d-sm-block">Welcome, Admin</span>
-                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Admin">
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list"></i> All Results</h5>
+                <div>
+                    <span class="badge bg-primary me-2">Total: <span id="totalResults">0</span></span>
+                    <span class="badge bg-success">Average: <span id="averageScore">0</span>%</span>
                 </div>
             </div>
-        </nav>
-        
-        <div class="tab-content">
-            <!-- Results Tab -->
-            <div class="tab-pane fade show active" id="results">
-                <div class="filter-container">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label class="form-label">Class</label>
-                            <select class="form-select" id="filterClass">
-                                <option value="">All Classes</option>
-                                <option value="jss1">JSS 1</option>
-                                <option value="jss2">JSS 2</option>
-                                <option value="jss3">JSS 3</option>
-                                <option value="sss1">SSS 1</option>
-                                <option value="sss2">SSS 2</option>
-                                <option value="sss3">SSS 3</option>
-                                <option value="waec_jamb">WAEC/JAMB</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Subject</label>
-                            <select class="form-select" id="filterSubject">
-                                <option value="">All Subjects</option>
-                                <option value="mathematics">Mathematics</option>
-                                <option value="english">English</option>
-                                <option value="physics">Physics</option>
-                                <option value="chemistry">Chemistry</option>
-                                <option value="biology">Biology</option>
-                                <option value="economics">Economics</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Exam Type</label>
-                            <select class="form-select" id="filterExamType">
-                                <option value="">All Types</option>
-                                <option value="ca">Continuous Assessment</option>
-                                <option value="midterm">Midterm Exam</option>
-                                <option value="exam">End of Term Exam</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Date Range</label>
-                            <input type="date" class="form-control" id="filterDate">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <button class="btn btn-primary me-2" id="applyFilters">
-                                <i class="fas fa-filter"></i> Apply Filters
-                            </button>
-                            <button class="btn btn-outline-secondary" id="resetFilters">
-                                <i class="fas fa-undo"></i> Reset
-                            </button>
-                            <button class="btn btn-success float-end" id="exportBtn">
-                                <i class="fas fa-file-export"></i> Export to Excel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>Exam Results</span>
-                        <div>
-                            <span class="badge bg-secondary me-2">Total: <span id="totalResults">0</span></span>
-                            <span class="badge bg-success">Average: <span id="averageScore">0</span>%</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Student</th>
-                                        <th>Class</th>
-                                        <th>Subject</th>
-                                        <th>Exam Type</th>
-                                        <th>Term/Session</th>
-                                        <th>Objective Score</th>
-                                        <th>Theory Score</th>
-                                        <th>Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="resultsTable">
-                                    <!-- Results will be loaded here -->
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center" id="pagination">
-                                <!-- Pagination will be added here -->
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Analytics Tab -->
-            <div class="tab-pane fade" id="analytics">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                Performance by Class
-                            </div>
-                            <div class="card-body">
-                                <canvas id="classChart" height="300"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                Performance by Subject
-                            </div>
-                            <div class="card-body">
-                                <canvas id="subjectChart" height="300"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                Performance Over Time
-                            </div>
-                            <div class="card-body">
-                                <canvas id="timeChart" height="100"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Settings Tab -->
-            <div class="tab-pane fade" id="settings">
-                <div class="card">
-                    <div class="card-header">
-                        Admin Settings
-                    </div>
-                    <div class="card-body">
-                        <form id="adminSettings">
-                            <div class="mb-3">
-                                <label class="form-label">System Name</label>
-                                <input type="text" class="form-control" value="Climax Brains Academy CBT System">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Exam Duration (minutes)</label>
-                                <input type="number" class="form-control" value="30">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Passing Score (%)</label>
-                                <input type="number" class="form-control" value="50">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save Settings</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Result Details Modal -->
-    <div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Exam Result Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="resultDetails">
-                    <!-- Details will be loaded here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="printResult">Print Result</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Edit Score Modal -->
-    <div class="modal fade" id="editScoreModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update Theory Score</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editScoreForm">
-                        <input type="hidden" id="editResultId">
-                        <div class="mb-3">
-                            <label class="form-label">Student Name</label>
-                            <input type="text" class="form-control" id="editStudentName" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Theory Score (%)</label>
-                            <input type="number" class="form-control" id="editTheoryScore" min="0" max="100">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Teacher's Remarks</label>
-                            <textarea class="form-control" id="editRemarks" rows="3"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveScoreBtn">Save Changes</button>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Subject</th>
+                                <th>Exam Type</th>
+                                <th>Term/Session</th>
+                                <th>Objective</th>
+                                <th>Theory</th>
+                                <th>Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTable">
+                            <!-- Results will be loaded here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    
+
     <script>
-        // Firebase Configuration (use same as in exam.html)
+        // Your Firebase configuration
         const firebaseConfig = {
   apiKey: "AIzaSyDuKgSUZejLLveOe8oXlHo64OnCDFvwPc4",
   authDomain: "climax-brains-academy-cbt.firebaseapp.com",
@@ -416,667 +101,97 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const auth = firebase.auth();
 
-        // Firebase Authentication Check
-auth.onAuthStateChanged((user) => {
-    if (!user) {
-        // User is not logged in, redirect to login page
-        window.location.href = 'admin-login.html';
-    } else {
-        // Optional: Verify user has admin privileges
-        user.getIdTokenResult().then((idTokenResult) => {
-            // Check for custom admin claim if you've set it up
-            if (!idTokenResult.claims.admin) {
-                // User doesn't have admin privileges
-                auth.signOut().then(() => {
-                    window.location.href = 'admin-login.html?error=unauthorized';
-                });
-            }
-            // If claims are OK, proceed to load admin content
-            loadAdminContent();
-        }).catch((error) => {
-            console.error('Error checking admin status:', error);
-            auth.signOut().then(() => {
-                window.location.href = 'admin-login.html?error=auth_error';
-            });
-        });
-    }
-});
-
-function loadAdminContent() {
-    // All your existing admin page initialization code goes here
-    // This only runs after successful authentication
-    loadResults();
-    updateAnalytics();
-    // etc...
-}
-
-        // DOM Elements
+        // DOM elements
         const resultsTable = document.getElementById('resultsTable');
         const totalResults = document.getElementById('totalResults');
         const averageScore = document.getElementById('averageScore');
-        const applyFilters = document.getElementById('applyFilters');
-        const resetFilters = document.getElementById('resetFilters');
-        const exportBtn = document.getElementById('exportBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const saveScoreBtn = document.getElementById('saveScoreBtn');
-        const printResult = document.getElementById('printResult');
-        
-        // Filter elements
-        const filterClass = document.getElementById('filterClass');
-        const filterSubject = document.getElementById('filterSubject');
-        const filterExamType = document.getElementById('filterExamType');
-        const filterDate = document.getElementById('filterDate');
-
-        // Global variables
-        let allResults = [];
-        let filteredResults = [];
-        let currentPage = 1;
-        const resultsPerPage = 10;
-        let classChart, subjectChart, timeChart;
-
-        // Initialize the admin portal
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check authentication state
-            auth.onAuthStateChanged(user => {
-                if (!user) {
-                    // Redirect to login page if not authenticated
-                    window.location.href = 'admin-login.html';
-                } else {
-                    // Load results if authenticated
-                    loadResults();
-                }
-            });
-
-            // Event listeners
-            applyFilters.addEventListener('click', applyResultsFilters);
-            resetFilters.addEventListener('click', resetResultsFilters);
-            exportBtn.addEventListener('click', exportToExcel);
-            logoutBtn.addEventListener('click', logout);
-            saveScoreBtn.addEventListener('click', saveTheoryScore);
-            printResult.addEventListener('click', printResultDetails);
-        });
 
         // Load results from Firebase
         function loadResults() {
-            const resultsRef = database.ref('examResults');
-            
-            resultsRef.on('value', (snapshot) => {
-                allResults = [];
+            database.ref('examResults').orderByChild('timestamp').on('value', (snapshot) => {
+                const results = [];
                 let totalScore = 0;
-                
+                let count = 0;
+
                 snapshot.forEach(childSnapshot => {
                     const result = childSnapshot.val();
-                    result.id = childSnapshot.key; // Add the Firebase ID
-                    allResults.push(result);
+                    result.id = childSnapshot.key;
+                    results.unshift(result); // Add to beginning to show newest first
                     
-                    // Calculate total score for average
                     if (result.objectiveScore) {
                         totalScore += result.objectiveScore;
+                        count++;
                     }
                 });
+
+                displayResults(results);
                 
-                // Reverse to show latest first
-                allResults.reverse();
-                
-                // Update UI
-                filteredResults = [...allResults];
-                updateResultsTable();
-                updateAnalytics();
-                
-                // Calculate average
-                const avg = allResults.length > 0 ? Math.round(totalScore / allResults.length) : 0;
-                averageScore.textContent = avg;
-                totalResults.textContent = allResults.length;
+                // Update summary
+                totalResults.textContent = results.length;
+                averageScore.textContent = count > 0 ? Math.round(totalScore / count) : 0;
             });
         }
 
-        // Update results table with filtered data
-        function updateResultsTable(page = 1) {
-            currentPage = page;
-            const startIndex = (page - 1) * resultsPerPage;
-            const endIndex = startIndex + resultsPerPage;
-            const paginatedResults = filteredResults.slice(startIndex, endIndex);
-            
-            // Clear existing rows
+        // Display results in the table
+        function displayResults(results) {
             resultsTable.innerHTML = '';
-            
-            if (paginatedResults.length === 0) {
+
+            if (results.length === 0) {
                 resultsTable.innerHTML = `
                     <tr>
-                        <td colspan="9" class="text-center py-4">No results found matching your criteria</td>
+                        <td colspan="8" class="text-center py-4">No results found in database</td>
                     </tr>
                 `;
-            } else {
-                // Add new rows
-                paginatedResults.forEach(result => {
-                    const row = document.createElement('tr');
-                    row.className = 'result-row';
-                    row.innerHTML = `
-                        <td>${result.name || 'N/A'}</td>
-                        <td>${result.class ? result.class.toUpperCase() : 'N/A'}</td>
-                        <td>${result.subject ? capitalizeFirstLetter(result.subject) : 'N/A'}</td>
-                        <td>
-                            ${getExamTypeDisplay(result.examType)}
-                        </td>
-                        <td>${result.term ? `${capitalizeFirstLetter(result.term)} Term` : 'N/A'} ${result.session ? result.session.replace('_', '/') : ''}</td>
-                        <td class="score-cell ${getScoreClass(result.objectiveScore)}">
-                            ${result.objectiveScore || result.objectiveScore === 0 ? result.objectiveScore + '%' : 'N/A'}
-                        </td>
-                        <td class="score-cell ${getScoreClass(result.theoryScore)}">
-                            ${result.theoryScore || result.theoryScore === 0 ? result.theoryScore + '%' : 'Pending'}
-                        </td>
-                        <td>${formatDate(result.timestamp || result.submittedAt)}</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary view-details" data-id="${result.id}">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            ${result.theorySubmitted ? `
-                            <button class="btn btn-sm btn-outline-warning edit-score" data-id="${result.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            ` : ''}
-                        </td>
-                    `;
-                    resultsTable.appendChild(row);
-                });
-                
-                // Add event listeners to the new buttons
-                document.querySelectorAll('.view-details').forEach(btn => {
-                    btn.addEventListener('click', () => viewResultDetails(btn.dataset.id));
-                });
-                
-                document.querySelectorAll('.edit-score').forEach(btn => {
-                    btn.addEventListener('click', () => openEditScoreModal(btn.dataset.id));
-                });
-            }
-            
-            // Update pagination
-            updatePagination();
-        }
-
-        // Apply filters to results
-        function applyResultsFilters() {
-            const classFilter = filterClass.value;
-            const subjectFilter = filterSubject.value;
-            const examTypeFilter = filterExamType.value;
-            const dateFilter = filterDate.value;
-            
-            filteredResults = allResults.filter(result => {
-                // Check class filter
-                if (classFilter && result.class !== classFilter) return false;
-                
-                // Check subject filter
-                if (subjectFilter && result.subject !== subjectFilter) return false;
-                
-                // Check exam type filter
-                if (examTypeFilter && result.examType !== examTypeFilter) return false;
-                
-                // Check date filter
-                if (dateFilter) {
-                    const resultDate = new Date(result.timestamp || result.submittedAt).toISOString().split('T')[0];
-                    if (resultDate !== dateFilter) return false;
-                }
-                
-                return true;
-            });
-            
-            // Reset to first page and update table
-            currentPage = 1;
-            updateResultsTable();
-            
-            // Update analytics with filtered data
-            updateAnalytics();
-        }
-
-        // Reset all filters
-        function resetResultsFilters() {
-            filterClass.value = '';
-            filterSubject.value = '';
-            filterExamType.value = '';
-            filterDate.value = '';
-            
-            filteredResults = [...allResults];
-            currentPage = 1;
-            updateResultsTable();
-            updateAnalytics();
-        }
-
-        // View detailed result
-        function viewResultDetails(resultId) {
-            const result = allResults.find(r => r.id === resultId);
-            if (!result) return;
-            
-            const modal = new bootstrap.Modal(document.getElementById('resultModal'));
-            const detailsContainer = document.getElementById('resultDetails');
-            
-            // Format the details HTML
-            detailsContainer.innerHTML = `
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <h6>Student Information</h6>
-                        <p><strong>Name:</strong> ${result.name || 'N/A'}</p>
-                        <p><strong>Class:</strong> ${result.class ? result.class.toUpperCase() : 'N/A'}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Exam Information</h6>
-                        <p><strong>Subject:</strong> ${result.subject ? capitalizeFirstLetter(result.subject) : 'N/A'}</p>
-                        <p><strong>Exam Type:</strong> ${getExamTypeDisplay(result.examType)}</p>
-                        <p><strong>Term/Session:</strong> ${result.term ? `${capitalizeFirstLetter(result.term)} Term` : 'N/A'} ${result.session ? result.session.replace('_', '/') : ''}</p>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header bg-primary text-white">
-                                Objective Section
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title ${getScoreClass(result.objectiveScore)}">
-                                    ${result.objectiveScore || result.objectiveScore === 0 ? result.objectiveScore + '%' : 'N/A'}
-                                </h3>
-                                <p class="card-text">Automatically graded</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card mb-3">
-                            <div class="card-header ${result.theoryScore !== undefined ? 'bg-success text-white' : 'bg-warning'}">
-                                Theory Section
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title ${getScoreClass(result.theoryScore)}">
-                                    ${result.theoryScore || result.theoryScore === 0 ? result.theoryScore + '%' : 'Pending'}
-                                </h3>
-                                ${result.theoryScore !== undefined ? `
-                                    <p class="card-text">Graded by teacher</p>
-                                    ${result.remarks ? `<p class="card-text"><strong>Remarks:</strong> ${result.remarks}</p>` : ''}
-                                ` : `
-                                    <p class="card-text">Not graded yet</p>
-                                    ${result.theorySubmitted ? '<p class="card-text">Answer sheet submitted</p>' : ''}
-                                `}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                ${result.answers ? `
-                <div class="mt-4">
-                    <h5>Objective Answers</h5>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Question</th>
-                                <th>Selected Answer</th>
-                                <th>Correct Answer</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${result.answers.map((answer, index) => {
-                                const question = getQuestionForResult(result, index);
-                                if (!question) return '';
-                                
-                                const isCorrect = answer === question.answer;
-                                return `
-                                    <tr>
-                                        <td>${question.question}</td>
-                                        <td>${answer !== null ? question.options[answer] : 'Not answered'}</td>
-                                        <td>${question.options[question.answer]}</td>
-                                        <td>
-                                            <span class="badge ${isCorrect ? 'bg-success' : 'bg-danger'}">
-                                                ${isCorrect ? 'Correct' : 'Incorrect'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                ` : ''}
-            `;
-            
-            modal.show();
-        }
-
-        // Open modal to edit theory score
-        function openEditScoreModal(resultId) {
-            const result = allResults.find(r => r.id === resultId);
-            if (!result) return;
-            
-            document.getElementById('editResultId').value = resultId;
-            document.getElementById('editStudentName').value = result.name || 'N/A';
-            document.getElementById('editTheoryScore').value = result.theoryScore || '';
-            document.getElementById('editRemarks').value = result.remarks || '';
-            
-            const modal = new bootstrap.Modal(document.getElementById('editScoreModal'));
-            modal.show();
-        }
-
-        // Save updated theory score
-        function saveTheoryScore() {
-            const resultId = document.getElementById('editResultId').value;
-            const theoryScore = document.getElementById('editTheoryScore').value;
-            const remarks = document.getElementById('editRemarks').value;
-            
-            if (!resultId) return;
-            
-            // Validate score
-            if (theoryScore === '' || isNaN(theoryScore) || theoryScore < 0 || theoryScore > 100) {
-                alert('Please enter a valid score between 0 and 100');
                 return;
             }
-            
-            // Update in Firebase
-            database.ref(`examResults/${resultId}`).update({
-                theoryScore: parseInt(theoryScore),
-                remarks: remarks,
-                gradedAt: new Date().toISOString()
-            }).then(() => {
-                // Close modal and show success
-                bootstrap.Modal.getInstance(document.getElementById('editScoreModal')).hide();
-                
-                // Find and update the result in our local array
-                const resultIndex = allResults.findIndex(r => r.id === resultId);
-                if (resultIndex !== -1) {
-                    allResults[resultIndex].theoryScore = parseInt(theoryScore);
-                    allResults[resultIndex].remarks = remarks;
-                    
-                    // Update the table if this result is visible
-                    if (filteredResults.some(r => r.id === resultId)) {
-                        updateResultsTable(currentPage);
-                    }
-                }
-            }).catch(error => {
-                console.error('Error updating score:', error);
-                alert('Failed to update score. Please try again.');
-            });
-        }
 
-        // Update pagination controls
-        function updatePagination() {
-            const totalPages = Math.ceil(filteredResults.length / resultsPerPage);
-            const pagination = document.getElementById('pagination');
-            
-            pagination.innerHTML = '';
-            
-            if (totalPages <= 1) return;
-            
-            // Previous button
-            const prevLi = document.createElement('li');
-            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-            prevLi.innerHTML = `<a class="page-link" href="#">Previous</a>`;
-            prevLi.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentPage > 1) updateResultsTable(currentPage - 1);
-            });
-            pagination.appendChild(prevLi);
-            
-            // Page numbers
-            for (let i = 1; i <= totalPages; i++) {
-                const pageLi = document.createElement('li');
-                pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-                pageLi.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    updateResultsTable(i);
-                });
-                pagination.appendChild(pageLi);
-            }
-            
-            // Next button
-            const nextLi = document.createElement('li');
-            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-            nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
-            nextLi.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentPage < totalPages) updateResultsTable(currentPage + 1);
-            });
-            pagination.appendChild(nextLi);
-        }
-
-        // Update analytics charts
-        function updateAnalytics() {
-            // Performance by Class
-            const classData = {};
-            filteredResults.forEach(result => {
-                if (!result.class) return;
+            results.forEach(result => {
+                const row = document.createElement('tr');
                 
-                if (!classData[result.class]) {
-                    classData[result.class] = {
-                        total: 0,
-                        count: 0
-                    };
-                }
+                row.innerHTML = `
+                    <td>${result.name || 'N/A'}</td>
+                    <td>${result.class ? result.class.toUpperCase() : 'N/A'}</td>
+                    <td>${result.subject ? capitalizeFirstLetter(result.subject) : 'N/A'}</td>
+                    <td>${getExamTypeBadge(result.examType)}</td>
+                    <td>${result.term ? `${capitalizeFirstLetter(result.term)} Term` : ''} ${result.session || ''}</td>
+                    <td class="${getScoreClass(result.objectiveScore)}">
+                        ${result.objectiveScore || result.objectiveScore === 0 ? result.objectiveScore + '%' : 'N/A'}
+                    </td>
+                    <td class="${getScoreClass(result.theoryScore)}">
+                        ${result.theoryScore || result.theoryScore === 0 ? result.theoryScore + '%' : 'Pending'}
+                    </td>
+                    <td>${formatDate(result.submittedAt || result.timeStamp)}</td>
+                `;
                 
-                if (result.objectiveScore) {
-                    classData[result.class].total += result.objectiveScore;
-                    classData[result.class].count++;
-                }
-            });
-            
-            const classLabels = Object.keys(classData);
-            const classAverages = classLabels.map(cls => {
-                return classData[cls].count > 0 ? Math.round(classData[cls].total / classData[cls].count) : 0;
-            });
-            
-            if (classChart) classChart.destroy();
-            
-            const classCtx = document.getElementById('classChart').getContext('2d');
-            classChart = new Chart(classCtx, {
-                type: 'bar',
-                data: {
-                    labels: classLabels.map(cls => cls.toUpperCase()),
-                    datasets: [{
-                        label: 'Average Score (%)',
-                        data: classAverages,
-                        backgroundColor: classLabels.map(cls => 
-                            cls.includes('jss') ? 'rgba(106, 13, 173, 0.7)' : 'rgba(114, 47, 55, 0.7)'
-                        ),
-                        borderColor: classLabels.map(cls => 
-                            cls.includes('jss') ? 'rgba(106, 13, 173, 1)' : 'rgba(114, 47, 55, 1)'
-                        ),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-            
-            // Performance by Subject
-            const subjectData = {};
-            filteredResults.forEach(result => {
-                if (!result.subject) return;
-                
-                if (!subjectData[result.subject]) {
-                    subjectData[result.subject] = {
-                        total: 0,
-                        count: 0
-                    };
-                }
-                
-                if (result.objectiveScore) {
-                    subjectData[result.subject].total += result.objectiveScore;
-                    subjectData[result.subject].count++;
-                }
-            });
-            
-            const subjectLabels = Object.keys(subjectData);
-            const subjectAverages = subjectLabels.map(subject => {
-                return subjectData[subject].count > 0 ? Math.round(subjectData[subject].total / subjectData[subject].count) : 0;
-            });
-            
-            if (subjectChart) subjectChart.destroy();
-            
-            const subjectCtx = document.getElementById('subjectChart').getContext('2d');
-            subjectChart = new Chart(subjectCtx, {
-                type: 'bar',
-                data: {
-                    labels: subjectLabels.map(subject => capitalizeFirstLetter(subject)),
-                    datasets: [{
-                        label: 'Average Score (%)',
-                        data: subjectAverages,
-                        backgroundColor: 'rgba(212, 175, 55, 0.7)',
-                        borderColor: 'rgba(212, 175, 55, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-            
-            // Performance Over Time (last 7 days)
-            const timeData = {};
-            const now = new Date();
-            const last7Days = [];
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(now);
-                date.setDate(date.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                last7Days.push(dateStr);
-                timeData[dateStr] = {
-                    total: 0,
-                    count: 0
-                };
-            }
-            
-            filteredResults.forEach(result => {
-                const date = new Date(result.timestamp || result.submittedAt);
-                if (isNaN(date.getTime())) return;
-                
-                const dateStr = date.toISOString().split('T')[0];
-                if (last7Days.includes(dateStr) {
-                    if (result.objectiveScore) {
-                        timeData[dateStr].total += result.objectiveScore;
-                        timeData[dateStr].count++;
-                    }
-                }
-            });
-            
-            const timeAverages = last7Days.map(date => {
-                return timeData[date].count > 0 ? Math.round(timeData[date].total / timeData[date].count) : 0;
-            });
-            
-            if (timeChart) timeChart.destroy();
-            
-            const timeCtx = document.getElementById('timeChart').getContext('2d');
-            timeChart = new Chart(timeCtx, {
-                type: 'line',
-                data: {
-                    labels: last7Days.map(date => formatDate(date)),
-                    datasets: [{
-                        label: 'Daily Average Score (%)',
-                        data: timeAverages,
-                        backgroundColor: 'rgba(106, 13, 173, 0.2)',
-                        borderColor: 'rgba(106, 13, 173, 1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-        }
-
-        // Export results to Excel
-        function exportToExcel() {
-            if (filteredResults.length === 0) {
-                alert('No results to export');
-                return;
-            }
-            
-            // Prepare data for export
-            const exportData = filteredResults.map(result => {
-                return {
-                    'Student Name': result.name || '',
-                    'Class': result.class ? result.class.toUpperCase() : '',
-                    'Subject': result.subject ? capitalizeFirstLetter(result.subject) : '',
-                    'Exam Type': getExamTypeDisplay(result.examType),
-                    'Term': result.term ? `${capitalizeFirstLetter(result.term)} Term` : '',
-                    'Session': result.session ? result.session.replace('_', '/') : '',
-                    'Objective Score': result.objectiveScore || result.objectiveScore === 0 ? result.objectiveScore + '%' : '',
-                    'Theory Score': result.theoryScore || result.theoryScore === 0 ? result.theoryScore + '%' : 'Pending',
-                    'Date': formatDate(result.timestamp || result.submittedAt),
-                    'Remarks': result.remarks || ''
-                };
-            });
-            
-            // Create worksheet
-            const ws = XLSX.utils.json_to_sheet(exportData);
-            
-            // Create workbook
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Exam Results');
-            
-            // Export to file
-            const dateStr = new Date().toISOString().split('T')[0];
-            XLSX.writeFile(wb, `Exam_Results_${dateStr}.xlsx`);
-        }
-
-        // Print result details
-        function printResultDetails() {
-            const printContent = document.getElementById('resultDetails').innerHTML;
-            const originalContent = document.body.innerHTML;
-            
-            document.body.innerHTML = `
-                <div style="padding: 20px; max-width: 800px; margin: 0 auto;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <img src="school-logo.png" alt="School Logo" style="height: 60px;">
-                        <h2>Climax Brains Academy</h2>
-                        <h3>Exam Result</h3>
-                    </div>
-                    ${printContent}
-                    <div style="margin-top: 30px; text-align: right; font-style: italic;">
-                        Printed on ${new Date().toLocaleDateString()}
-                    </div>
-                </div>
-            `;
-            
-            window.print();
-            document.body.innerHTML = originalContent;
-            window.location.reload();
-        }
-
-        // Logout admin
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'admin-login.html';
-            }).catch(error => {
-                console.error('Logout error:', error);
+                resultsTable.appendChild(row);
             });
         }
 
         // Helper functions
-        function getExamTypeDisplay(type) {
-            switch(type) {
-                case 'ca': return '<span class="badge bg-primary">CA</span>';
-                case 'midterm': return '<span class="badge bg-warning text-dark">Midterm</span>';
-                case 'exam': return '<span class="badge bg-danger">Exam</span>';
-                default: return 'N/A';
-            }
+        function getExamTypeBadge(type) {
+            if (!type) return 'N/A';
+            
+            const types = {
+                'ca': ['CA', 'primary'],
+                'midterm': ['Midterm', 'warning'],
+                'exam': ['Exam', 'danger']
+            };
+            
+            const [label, style] = types[type] || ['Other', 'secondary'];
+            return `<span class="badge bg-${style}">${label}</span>`;
+        }
+
+        function getScoreClass(score) {
+            if (score === undefined || score === null) return '';
+            if (score >= 70) return 'score-high';
+            if (score >= 50) return 'score-medium';
+            return 'score-low';
+        }
+
+        function capitalizeFirstLetter(string) {
+            if (!string) return '';
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
         function formatDate(dateString) {
@@ -1094,35 +209,8 @@ function loadAdminContent() {
             });
         }
 
-        function capitalizeFirstLetter(string) {
-            if (!string) return '';
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function getScoreClass(score) {
-            if (score === undefined || score === null) return '';
-            if (score >= 70) return 'score-high';
-            if (score >= 50) return 'score-medium';
-            return 'score-low';
-        }
-
-        function getQuestionForResult(result, index) {
-            // This is a simplified version - in a real implementation, you would need to 
-            // store the actual questions with each result or have a way to look them up
-            // from your question banks
-            
-            // For demo purposes, we'll return a generic question
-            if (index >= 0 && index < (result.answers?.length || 0)) {
-                return {
-                    question: `Question ${index + 1}`,
-                    options: ['Option A', 'Option B', 'Option C', 'Option D'],
-                    answer: Math.floor(Math.random() * 4) // Random answer for demo
-                };
-            }
-            return null;
-        }
+        // Initialize the page
+        loadResults();
     </script>
 </body>
 </html>
-
-
