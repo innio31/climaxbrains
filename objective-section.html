@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objective Section - The Climax Brains Academy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-purple: #6a0dad;
+            --secondary-wine: #722f37;
+            --accent-gold: #d4af37;
+            --correct-green: #4CAF50;
+            --incorrect-red: #f44336;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f9f3ff 0%, #f5e8f5 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .exam-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, var(--primary-purple), var(--secondary-wine));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .student-info {
+            font-size: 14px;
+        }
+        
+        .subject-info {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .timer {
+            font-size: 20px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.2);
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+        
+        .time-warning {
+            color: #ffeb3b;
+            animation: pulse 1s infinite;
+        }
+        
+        .time-critical {
+            color: #ff5252;
+            animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .question-container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .question-number {
+            color: var(--secondary-wine);
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            border-color: var(--light-purple);
+            background-color: #f9f3ff;
+        }
+        
+        .option.selected {
+            border-color: var(--primary-purple);
+            background-color: #f0e5ff;
+            font-weight: bold;
+        }
+        
+        .option-letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            background: var(--primary-purple);
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(to right, var(--primary-purple), var(--secondary-wine));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .nav-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, #d32f2f, #f44336);
+        }
+        
+        .progress-container {
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-purple), var(--secondary-wine));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .exam-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .question-container {
+                padding: 20px 15px;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="exam-container">
+        <div class="exam-header animate__animated animate__fadeIn">
+            <div class="student-info">
+                <div id="studentClassLevel"></div>
+                <div id="studentName"></div>
+                <div class="subject-info" id="currentSubject"></div>
+            </div>
+            <div class="timer" id="examTimer">60:00</div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="question-container animate__animated animate__fadeInUp">
+            <div class="question-number">
+                <span id="currentQuestionNum">Question 1</span>
+                <span id="totalQuestions">of 40</span>
+            </div>
+            <div class="question-text" id="questionText"></div>
+            <div class="options-container" id="optionsContainer"></div>
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" disabled>Previous</button>
+            <button class="nav-btn" id="nextBtn">Next</button>
+            <button class="nav-btn submit-btn" id="submitBtn" style="display:none;">Submit Section</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script>
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDuKgSUZejLLveOe8oXlHo64OnCDFvwPc4",
+  authDomain: "climax-brains-academy-cbt.firebaseapp.com",
+  projectId: "climax-brains-academy-cbt",
+  storageBucket: "climax-brains-academy-cbt.firebasestorage.app",
+  messagingSenderId: "1024257040553",
+  appId: "1:1024257040553:web:3cc25d238fa378358f09b8",
+  measurementId: "G-LVDHYESXJG"
+};
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // Class and Subject Questions Data (manually inputted)
+        const classSubjects = {
+            "JSS1": {
+                "Mathematics": [
+                    {
+                        question: "What is 15 + 27?",
+                        options: ["32", "42", "38", "45"],
+                        answer: 1
+                    },
+                    {
+                        question: "Which of these is a prime number?",
+                        options: ["4", "9", "11", "15"],
+                        answer: 2
+                    }
+                    // Add more questions...
+                ],
+                "English": [
+                    {
+                        question: "Which word is a noun?",
+                        options: ["run", "beautiful", "school", "quickly"],
+                        answer: 2
+                    }
+                    // Add more questions...
+                ]
+            },
+            "JSS2": {
+                "Mathematics": [
+                    {
+                        question: "Solve for x: 2x + 5 = 15",
+                        options: ["5", "10", "7.5", "3"],
+                        answer: 0
+                    }
+                    // Add more questions...
+                ],
+                "English": [
+                    {
+                        question: "Identify the adverb: 'She sings beautifully'",
+                        options: ["She", "sings", "beautifully", "None"],
+                        answer: 2
+                    }
+                    // Add more questions...
+                ]
+            },
+            "JSS3": {
+                "Mathematics": [
+                    {
+                        question: "Solve for x: 2x + 5 = 15",
+                        options: ["5", "10", "7.5", "3"],
+                        answer: 0
+                    }
+                    // Add more questions...
+                ],
+                "English": [
+                    {
+                        question: "Identify the adverb: 'She sings beautifully'",
+                        options: ["She", "sings", "beautifully", "None"],
+                        answer: 2
+                    }
+                    // Add more questions...
+                ]
+            },
+            // Add more classes...
+            "SS1": {
+                "Mathematics": [
+                    {
+                        question: "What is the value of π (pi) to two decimal places?",
+                        options: ["3.14", "3.16", "3.12", "3.18"],
+                        answer: 0
+                    }
+                    // Add more questions...
+                ],
+                "Physics": [
+                    {
+                        question: "What is the unit of force?",
+                        options: ["Joule", "Newton", "Watt", "Pascal"],
+                        answer: 1
+                    }
+                    // Add more questions...
+                ]
+            },
+            "SS2": {
+                "Mathematics": [
+                    {
+                        question: "Solve for x: 2x + 5 = 15",
+                        options: ["5", "10", "7.5", "3"],
+                        answer: 0
+                    }
+                    // Add more questions...
+                ],
+                "English": [
+                    {
+                        question: "Identify the adverb: 'She sings beautifully'",
+                        options: ["She", "sings", "beautifully", "None"],
+                        answer: 2
+                    }
+                    // Add more questions...
+                ]
+            },
+            "SS3": {
+                "Mathematics": [
+                    {
+                        question: "Solve for x: 2x + 5 = 15",
+                        options: ["5", "10", "7.5", "3"],
+                        answer: 0
+                    }
+                    // Add more questions...
+                ],
+                "English": [
+                    {
+                        question: "Identify the adverb: 'She sings beautifully'",
+                        options: ["She", "sings", "beautifully", "None"],
+                        answer: 2
+                    }
+                    // Add more questions...
+                ]
+            },
+        };
+
+        // Exam variables
+        let currentQuestionIndex = 0;
+        let selectedAnswers = [];
+        let timeLeft = 3600; // 60 minutes in seconds
+        let timerInterval;
+        let currentQuestions = [];
+        let currentSubject = "";
+        
+        // DOM elements
+        const studentNameEl = document.getElementById('studentName');
+        const studentClassEl = document.getElementById('studentClassLevel');
+        const currentSubjectEl = document.getElementById('currentSubject');
+        const timerEl = document.getElementById('examTimer');
+        const questionTextEl = document.getElementById('questionText');
+        const optionsContainerEl = document.getElementById('optionsContainer');
+        const currentQuestionNumEl = document.getElementById('currentQuestionNum');
+        const totalQuestionsEl = document.getElementById('totalQuestions');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        // Initialize exam
+        function initExam() {
+            const studentData = JSON.parse(sessionStorage.getItem('studentData'));
+            
+            if (!studentData || !studentData.class) {
+                alert('Student data not found. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display student info
+            studentNameEl.textContent = studentData.name;
+            
+            // Extract class level (JSS1, SS2, etc.)
+            const classLevel = studentData.class.match(/^(JSS|SS)\d/)?.[0] || 'JSS1';
+            studentClassEl.textContent = `Class: ${studentData.class}`;
+            
+            // Get available subjects for the class
+            const availableSubjects = Object.keys(classSubjects[classLevel] || []);
+            
+            if (availableSubjects.length === 0) {
+                alert('No questions available for your class. Contact administrator.');
+                return;
+            }
+            
+            // For demo: Select first subject, in production you would have subject selection
+            currentSubject = availableSubjects[0];
+            currentSubjectEl.textContent = `Subject: ${currentSubject}`;
+            
+            // Get questions for student's class and subject
+            currentQuestions = classSubjects[classLevel][currentSubject] || [];
+            
+            if (currentQuestions.length === 0) {
+                alert(`No questions available for ${currentSubject}. Contact administrator.`);
+                return;
+            }
+            
+            // Initialize empty answers array
+            selectedAnswers = new Array(currentQuestions.length).fill(null);
+            
+            // Set up UI
+            totalQuestionsEl.textContent = `of ${currentQuestions.length}`;
+            updateProgressBar();
+            
+            // Start timer
+            startTimer();
+            
+            // Show first question
+            showQuestion(currentQuestionIndex);
+        }
+
+        // Display question
+        function showQuestion(index) {
+            const question = currentQuestions[index];
+            
+            // Update question number display
+            currentQuestionNumEl.textContent = `Question ${index + 1}`;
+            
+            // Update question text
+            questionTextEl.textContent = question.question;
+            
+            // Clear previous options
+            optionsContainerEl.innerHTML = '';
+            
+            // Create option elements
+            question.options.forEach((option, i) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                if (selectedAnswers[index] === i) {
+                    optionEl.classList.add('selected');
+                }
+                
+                const optionLetter = document.createElement('div');
+                optionLetter.className = 'option-letter';
+                optionLetter.textContent = String.fromCharCode(65 + i);
+                
+                const optionText = document.createElement('div');
+                optionText.textContent = option;
+                
+                optionEl.appendChild(optionLetter);
+                optionEl.appendChild(optionText);
+                
+                optionEl.addEventListener('click', () => selectOption(i));
+                optionsContainerEl.appendChild(optionEl);
+            });
+            
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+            nextBtn.style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            submitBtn.style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+            
+            // Update progress bar
+            updateProgressBar();
+        }
+
+        // Select an option
+        function selectOption(optionIndex) {
+            selectedAnswers[currentQuestionIndex] = optionIndex;
+            showQuestion(currentQuestionIndex);
+        }
+
+        // Start exam timer
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Add warning styles when time is running low
+            if (timeLeft <= 300) { // 5 minutes left
+                timerEl.classList.add('time-critical');
+            } else if (timeLeft <= 600) { // 10 minutes left
+                timerEl.classList.add('time-warning');
+            }
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // Navigate to previous question
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }
+        });
+
+        // Navigate to next question
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            }
+        });
+
+        // Submit exam
+        submitBtn.addEventListener('click', submitExam);
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let score = 0;
+            selectedAnswers.forEach((answer, index) => {
+                if (answer === currentQuestions[index].answer) {
+                    score++;
+                }
+            });
+            
+            // Get student data
+            const studentData = JSON.parse(sessionStorage.getItem('studentData'));
+            
+            // Prepare result data
+            const resultData = {
+                examNumber: studentData.examNumber,
+                name: studentData.name,
+                class: studentData.class,
+                subject: currentSubject,
+                objectiveScore: score,
+                objectiveAnswers: selectedAnswers,
+                totalQuestions: currentQuestions.length,
+                submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                term: "2nd", // This should be dynamic in production
+                session: "2023/2024" // This should be dynamic in production
+            };
+            
+            // Save to Firestore
+            db.collection("examResults").add(resultData)
+                .then(() => {
+                    // Update student data with objective score
+                    studentData.objectiveScore = score;
+                    studentData.objectiveAnswers = selectedAnswers;
+                    sessionStorage.setItem('studentData', JSON.stringify(studentData));
+                    
+                    // Redirect to theory section
+                    window.location.href = 'theory-section.html';
+                })
+                .catch(error => {
+                    console.error("Error saving results: ", error);
+                    alert("Error submitting exam. Please try again.");
+                });
+        }
+
+        // Initialize exam when page loads
+        window.addEventListener('load', initExam);
+    </script>
+</body>
+</html>

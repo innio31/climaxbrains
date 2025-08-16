@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory Section - The Climax Brains Academy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-purple: #6a0dad;
+            --secondary-wine: #722f37;
+            --accent-gold: #d4af37;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f9f3ff 0%, #f5e8f5 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .exam-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, var(--primary-purple), var(--secondary-wine));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .student-info {
+            font-size: 14px;
+        }
+        
+        .subject-info {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .timer {
+            font-size: 20px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.2);
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+        
+        .time-warning {
+            color: #ffeb3b;
+            animation: pulse 1s infinite;
+        }
+        
+        .time-critical {
+            color: #ff5252;
+            animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .instructions {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .instructions h3 {
+            color: var(--secondary-wine);
+            margin-top: 0;
+            border-bottom: 2px dashed var(--light-wine);
+            padding-bottom: 10px;
+        }
+        
+        .theory-questions {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .question-section {
+            margin-bottom: 30px;
+        }
+        
+        .question-section h4 {
+            color: var(--primary-purple);
+            margin-bottom: 15px;
+        }
+        
+        .question {
+            background: #f9f3ff;
+            border-left: 4px solid var(--light-purple);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .submit-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, var(--primary-purple), var(--secondary-wine));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(106, 13, 173, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(106, 13, 173, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .exam-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .theory-questions {
+                padding: 20px 15px;
+            }
+            
+            .submit-btn {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="exam-container">
+        <div class="exam-header animate__animated animate__fadeIn">
+            <div class="student-info">
+                <div id="studentClassLevel"></div>
+                <div id="studentName"></div>
+                <div class="subject-info" id="currentSubject"></div>
+            </div>
+            <div class="timer" id="examTimer">60:00</div>
+        </div>
+        
+        <div class="instructions animate__animated animate__fadeInUp">
+            <h3><span>✍️</span> Theory Section Instructions</h3>
+            <ol>
+                <li>Write your answers clearly on the provided answer sheets</li>
+                <li>Number your answers corresponding to the question numbers</li>
+                <li>Write your exam number on every sheet</li>
+                <li>Use blue or black ink only</li>
+                <li>Write legibly - illegible answers will not be marked</li>
+                <li>You have <strong>60 minutes</strong> to complete this section</li>
+                <li>Submit all answer sheets to the invigilator when finished</li>
+            </ol>
+        </div>
+        
+        <div class="theory-questions animate__animated animate__fadeInUp animate__delay-1s">
+            <h3 style="color: var(--primary-purple);">Theory Questions</h3>
+            
+            <div id="questionsContainer">
+                <!-- Questions will be loaded here based on class and subject -->
+            </div>
+        </div>
+        
+        <div class="submit-container animate__animated animate__fadeInUp animate__delay-2s">
+            <button class="submit-btn" id="submitBtn">Submit Exam</button>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 The Climax Brains Academy, Ota. All Rights Reserved.</p>
+            <p>Powered by <a href="https://digskills.netlify.app" target="_blank" style="color: var(--primary-purple); font-weight: 600;">DigSkills</a></p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+  apiKey: "AIzaSyDuKgSUZejLLveOe8oXlHo64OnCDFvwPc4",
+  authDomain: "climax-brains-academy-cbt.firebaseapp.com",
+  projectId: "climax-brains-academy-cbt",
+  storageBucket: "climax-brains-academy-cbt.firebasestorage.app",
+  messagingSenderId: "1024257040553",
+  appId: "1:1024257040553:web:3cc25d238fa378358f09b8",
+  measurementId: "G-LVDHYESXJG"
+};
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // Class and Subject Theory Questions Data (manually inputted)
+        const classTheoryQuestions = {
+            "JSS1": {
+                "Mathematics": [
+                    "Explain the concept of prime numbers with examples.",
+                    "Solve the following equation showing all your work: 3x + 7 = 22"
+                ],
+                "English": [
+                    "Write a letter to your friend describing your school.",
+                    "Explain the difference between nouns and verbs with examples."
+                ]
+            },
+            "JSS2": {
+                "Mathematics": [
+                    "Solve the quadratic equation x² - 5x + 6 = 0 showing all steps.",
+                    "Explain the Pythagorean theorem with an example."
+                ],
+                "English": [
+                    "Write a short story titled 'An Unexpected Adventure' (not less than 200 words).",
+                    "Explain the use of metaphors in literature with examples."
+                ]
+            },
+            // Add more classes and subjects...
+            "SS1": {
+                "Mathematics": [
+                    "Prove that the sum of angles in a triangle is 180 degrees.",
+                    "Differentiate between permutation and combination with examples."
+                ],
+                "Physics": [
+                    "Explain Newton's laws of motion with practical examples for each.",
+                    "Describe an experiment to determine the acceleration due to gravity."
+                ]
+            }
+        };
+
+        // Exam variables
+        let timeLeft = 3600; // 60 minutes in seconds
+        let timerInterval;
+        let currentSubject = "";
+        
+        // DOM elements
+        const studentNameEl = document.getElementById('studentName');
+        const studentClassEl = document.getElementById('studentClassLevel');
+        const currentSubjectEl = document.getElementById('currentSubject');
+        const timerEl = document.getElementById('examTimer');
+        const questionsContainerEl = document.getElementById('questionsContainer');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Initialize exam
+        function initExam() {
+            const studentData = JSON.parse(sessionStorage.getItem('studentData'));
+            
+            if (!studentData || !studentData.class) {
+                alert('Student data not found. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display student info
+            studentNameEl.textContent = studentData.name;
+            
+            // Extract class level (JSS1, SS2, etc.)
+            const classLevel = studentData.class.match(/^(JSS|SS)\d/)?.[0] || 'JSS1';
+            studentClassEl.textContent = `Class: ${studentData.class}`;
+            
+            // Get available subjects for the class
+            const availableSubjects = Object.keys(classTheoryQuestions[classLevel] || {});
+            
+            if (availableSubjects.length === 0) {
+                alert('No theory questions available for your class. Contact administrator.');
+                return;
+            }
+            
+            // For demo: Select first subject, in production you would have subject selection
+            currentSubject = availableSubjects[0];
+            currentSubjectEl.textContent = `Subject: ${currentSubject}`;
+            
+            // Load questions for student's class and subject
+            loadTheoryQuestions(classLevel, currentSubject);
+            
+            // Start timer
+            startTimer();
+        }
+
+        // Load theory questions based on class and subject
+        function loadTheoryQuestions(classLevel, subject) {
+            const questions = classTheoryQuestions[classLevel][subject] || [];
+            const questionsContainer = document.getElementById('questionsContainer');
+            
+            if (questions.length === 0) {
+                questionsContainer.innerHTML = '<p>No theory questions available for this subject.</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            // Group questions into sections (you can modify this as needed)
+            html += `<div class="question-section">
+                        <h4>Section A (Answer all questions)</h4>`;
+            
+            questions.forEach((question, index) => {
+                html += `<div class="question">
+                            <p><strong>${index + 1}.</strong> ${question}</p>
+                        </div>`;
+            });
+            
+            html += `</div>`;
+            
+            questionsContainer.innerHTML = html;
+        }
+
+        // Start exam timer
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Add warning styles when time is running low
+            if (timeLeft <= 300) { // 5 minutes left
+                timerEl.classList.add('time-critical');
+            } else if (timeLeft <= 600) { // 10 minutes left
+                timerEl.classList.add('time-warning');
+            }
+        }
+
+        // Submit exam
+        function submitExam() {
+            clearInterval(timerInterval);
+            
+            // Get student data
+            const studentData = JSON.parse(sessionStorage.getItem('studentData'));
+            
+            // Update the existing exam result with theory submission
+            db.collection("examResults")
+                .where("examNumber", "==", studentData.examNumber)
+                .where("subject", "==", currentSubject)
+                .limit(1)
+                .get()
+                .then(querySnapshot => {
+                    if (!querySnapshot.empty) {
+                        // Update existing record
+                        const docId = querySnapshot.docs[0].id;
+                        return db.collection("examResults").doc(docId).update({
+                            theorySubmitted: true,
+                            submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    } else {
+                        // Create new record if not found (shouldn't happen in normal flow)
+                        const resultData = {
+                            examNumber: studentData.examNumber,
+                            name: studentData.name,
+                            class: studentData.class,
+                            subject: currentSubject,
+                            theorySubmitted: true,
+                            submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            term: "2nd", // This should be dynamic in production
+                            session: "2023/2024" // This should be dynamic in production
+                        };
+                        return db.collection("examResults").add(resultData);
+                    }
+                })
+                .then(() => {
+                    // Redirect to completion page
+                    window.location.href = 'exam-complete.html';
+                })
+                .catch(error => {
+                    console.error("Error submitting theory exam: ", error);
+                    alert("Error submitting exam. Please notify the invigilator.");
+                });
+        }
+
+        // Event listeners
+        submitBtn.addEventListener('click', submitExam);
+        
+        // Allow Enter key to submit (though not recommended for actual submission)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (confirm('Are you sure you want to submit your exam?')) {
+                    submitExam();
+                }
+            }
+        });
+
+        // Initialize exam when page loads
+        window.addEventListener('load', initExam);
+    </script>
+</body>
+</html>

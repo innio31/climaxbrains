@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Login - The Climax Model Schools</title>
+    <!-- Import Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-purple: #6a0dad;
+            --secondary-wine: #722f37;
+            --accent-gold: #d4af37;
+            --light-purple: #9c6fdc;
+            --light-wine: #a05252;
+            --error-red: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f9f3ff 0%, #f5e8f5 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 0 20px;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(106, 13, 173, 0.2);
+            padding: 2.5rem;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(106, 13, 173, 0.3);
+        }
+        
+        .logo {
+            height: 80px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        h2 {
+            color: var(--primary-purple);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-wine);
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--light-purple);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--primary-purple), var(--secondary-wine));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(106, 13, 173, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(106, 13, 173, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            color: var(--error-red);
+            margin-top: 1rem;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .footer-text {
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer-text a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: none;
+            margin: 10px auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-purple);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container animate__animated animate__fadeIn">
+        <div class="login-card">
+            <img src="school-logo.png" alt="The Climax Model Schools Logo" class="logo">
+            <h2>Examination Portal Login</h2>
+            
+            <div class="form-group">
+                <label for="examNumber">Exam Number</label>
+                <input type="text" id="examNumber" placeholder="e.g., CM001" autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label for="surname">Surname (Password)</label>
+                <input type="password" id="surname" placeholder="Enter your surname" autocomplete="off">
+            </div>
+            
+            <div class="loading" id="loading"></div>
+            <div class="error-message" id="errorMessage">Invalid exam number or surname. Please try again.</div>
+            
+            <button class="btn" id="loginBtn">Login</button>
+            
+            <p class="footer-text">Having issues? Contact <a href="mailto:cbt-support@climaxmodelschools.edu.ng">CBT Support</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Reference to students in database
+        const studentsRef = database.ref('students');
+
+        // Login function
+        document.getElementById('loginBtn').addEventListener('click', loginUser);
+
+        function loginUser() {
+            const examNumber = document.getElementById('examNumber').value.trim().toUpperCase();
+            const surname = document.getElementById('surname').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const loading = document.getElementById('loading');
+            
+            // Validate inputs
+            if (!examNumber || !surname) {
+                errorMessage.textContent = "Please enter both exam number and surname";
+                errorMessage.style.display = "block";
+                return;
+            }
+            
+            // Show loading spinner
+            loading.style.display = "block";
+            errorMessage.style.display = "none";
+            
+            // Check student in database
+            studentsRef.orderByChild('examNumber').equalTo(examNumber).once('value')
+                .then((snapshot) => {
+                    loading.style.display = "none";
+                    
+                    if (snapshot.exists()) {
+                        const studentData = Object.values(snapshot.val())[0];
+                        
+                        // Check if surname matches (case insensitive)
+                        if (studentData.surname.toLowerCase() === surname.toLowerCase()) {
+                            // Store student data in session storage
+                            sessionStorage.setItem('studentData', JSON.stringify({
+                                examNumber: studentData.examNumber,
+                                name: studentData.name,
+                                class: studentData.class
+                            }));
+                            
+                            // Redirect to exam instructions
+                            window.location.href = 'exam-instructions.html';
+                        } else {
+                            errorMessage.textContent = "Incorrect surname. Please try again.";
+                            errorMessage.style.display = "block";
+                        }
+                    } else {
+                        errorMessage.textContent = "Exam number not found. Please check and try again.";
+                        errorMessage.style.display = "block";
+                    }
+                })
+                .catch((error) => {
+                    loading.style.display = "none";
+                    errorMessage.textContent = "An error occurred. Please try again later.";
+                    errorMessage.style.display = "block";
+                    console.error("Error fetching student data:", error);
+                });
+        }
+        
+        // Allow Enter key to submit form
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginUser();
+            }
+        });
+        // Add to your existing login script
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+function loginUser() {
+  const examNumber = document.getElementById('examNumber').value.trim().toUpperCase();
+  const surname = document.getElementById('surname').value.trim().toLowerCase();
+
+  // Check against Firestore students collection
+  db.collection("students")
+    .where("examNumber", "==", examNumber)
+    .where("surname", "==", surname)
+    .limit(1)
+    .get()
+    .then((snapshot) => {
+      if (!snapshot.empty) {
+        const studentData = snapshot.docs[0].data();
+        sessionStorage.setItem('studentData', JSON.stringify(studentData));
+        window.location.href = 'exam-instructions.html';
+      } else {
+        alert('Invalid credentials');
+      }
+    });
+}
+    </script>
+</body>
+</html>
