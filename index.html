@@ -4,75 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Climax Brains Academy - CBT Portal</title>
-    <style>
-        :root {
-            --primary-purple: #6a0dad;
-            --primary-wine: #722f37;
-            --secondary-color: #f8f9fa;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--secondary-color);
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background: linear-gradient(135deg, var(--primary-purple), var(--primary-wine));
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-        .instructions {
-            background-color: white;
-            padding: 1.5rem;
-            margin: 2rem auto;
-            max-width: 800px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .btn-start {
-            background-color: var(--primary-wine);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: block;
-            margin: 2rem auto;
-        }
-        .btn-start:hover {
-            opacity: 0.9;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="header">
-        <h1>Welcome to The Climax Brains Academy CBT Portal</h1>
-        <p>Computer-Based Testing Platform</p>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="assets/logo.png" alt="Climax Brains Academy Logo" class="logo">
+                <h1>The Climax Brains Academy</h1>
+                <p>Ota, Ogun State</p>
+            </div>
+            <h2>Computer-Based Testing Portal</h2>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section class="welcome-section">
+                <h2>Welcome to Your Examination Portal</h2>
+                <div class="divider"></div>
+                <p>Please read all instructions carefully before proceeding</p>
+            </section>
+
+            <section class="instructions-section">
+                <div class="instruction-card">
+                    <h3><span class="icon">📝</span> Examination Instructions</h3>
+                    <ol>
+                        <li>Ensure you have a stable internet connection throughout the exam</li>
+                        <li>This exam contains both objective and theory questions</li>
+                        <li>Objective questions will be automatically graded</li>
+                        <li>For theory questions, type your answers in the provided answer boxes</li>
+                        <li>Do not refresh the page or use the browser's back button during the exam</li>
+                        <li>The timer will be displayed and the exam will auto-submit when time elapses</li>
+                        <li>Any form of malpractice will lead to disqualification</li>
+                    </ol>
+                </div>
+
+                <div class="requirements-card">
+                    <h3><span class="icon">✅</span> Requirements</h3>
+                    <ul>
+                        <li>Latest version of Chrome, Firefox, or Edge browser</li>
+                        <li>JavaScript must be enabled</li>
+                        <li>Do not use mobile data (WiFi recommended)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="action-buttons">
+                <button id="startExam" class="btn-primary">
+                    Start Examination
+                </button>
+                <button id="adminLogin" class="btn-secondary">
+                    Are you an administrator?
+                </button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; <span id="currentYear"></span> The Climax Brains Academy. All Rights Reserved.</p>
+            <p>Powered by <a href="https://digskills.netlify.app" target="_blank" rel="noopener noreferrer" style="color: var(--accent-gold); text-decoration: none; font-weight: bold;">DigSkills</a></p>
+        </footer>
     </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/firebase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
     
-    <div class="instructions">
-        <h2>Examination Instructions</h2>
-        <ol>
-            <li>Ensure you have a stable internet connection</li>
-            <li>Read all questions carefully before answering</li>
-            <li>Objective questions will be graded automatically</li>
-            <li>For theory questions, write your answers on the provided answer sheet</li>
-            <li>Do not refresh the page during the exam</li>
-            <li>You cannot go back to previous questions once submitted</li>
-            <li>Time will be displayed and the exam will auto-submit when time elapses</li>
-        </ol>
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
         
-        <button class="btn-start" id="startExam">Proceed to Exam</button>
-    </div>
-    
-    <div style="text-align: center; margin-top: 2rem;">
-        <button id="adminLogin" style="background: none; border: none; color: var(--primary-purple); cursor: pointer;">
-            Are you an admin?
-        </button>
-    </div>
-    
-    <script src="app.js"></script>
+        // Add temporary click handlers (will be moved to auth.js)
+        document.getElementById('startExam').addEventListener('click', () => {
+            alert('Exam starting... This will launch the exam interface.');
+            // In production, this will redirect to exam.html or load exam component
+        });
+        
+        document.getElementById('adminLogin').addEventListener('click', () => {
+            alert('Admin login... This will launch the admin login page.');
+            // In production, this will redirect to admin-login.html
+        });
+    </script>
 </body>
 </html>
