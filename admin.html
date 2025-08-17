@@ -133,6 +133,69 @@
                 </div>
             </div>
         </div>
+        <!-- Add this new card section below the existing filter container -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cog me-2"></i>Exam Portal Management
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="toggleExamPortal" style="width: 3em; height: 1.5em;">
+                            <label class="form-check-label" for="toggleExamPortal">
+                                <h5>Exam Portal Status</h5>
+                                <p class="text-muted">Toggle to open/close the exam portal for students</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Available Exam Types</label>
+                            <div class="form-check">
+                                <input class="form-check-input exam-type-check" type="checkbox" value="ca" id="examTypeCA">
+                                <label class="form-check-label" for="examTypeCA">
+                                    Continuous Assessment (CA)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input exam-type-check" type="checkbox" value="midterm" id="examTypeMidterm">
+                                <label class="form-check-label" for="examTypeMidterm">
+                                    Midterm Exam
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input exam-type-check" type="checkbox" value="exam" id="examTypeFinal">
+                                <label class="form-check-label" for="examTypeFinal">
+                                    End of Term Exam
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="examStartDate" class="form-label">Start Date</label>
+                            <input type="datetime-local" class="form-control" id="examStartDate">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="examEndDate" class="form-label">End Date</label>
+                            <input type="datetime-local" class="form-control" id="examEndDate">
+                        </div>
+                    </div>
+                </div>
+                <button id="saveExamSettings" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+                                </div>
 
         <div class="row">
             <div class="col-md-8">
@@ -970,5 +1033,6 @@ function formatDateTimeForInput(dateString) {
     </script>
 </body>
 </html>
+
 
 
