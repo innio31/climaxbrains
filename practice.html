@@ -547,8 +547,16 @@
             }
             
             // Shuffle questions and select first 30 (or all if less than 30)
-            currentQuestions = shuffleArray([...allQuestions]).slice(0, 30);
-            userAnswers = new Array(currentQuestions.length).fill(null);
+currentQuestions = shuffleArray([...allQuestions]).slice(0, 30);
+
+// Shuffle options for each question
+currentQuestions.forEach(question => {
+    if (question.options) {
+        question.options = shuffleArray([...question.options]);
+    }
+});
+
+userAnswers = new Array(currentQuestions.length).fill(null);
             
             // Set exam title and info
             examTitle.textContent = `${currentSubject.toUpperCase()} Practice`;
