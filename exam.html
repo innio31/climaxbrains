@@ -589,7 +589,8 @@
     </div>
 
     <script>
-        // Firebase configuration (replace with your actual config)
+        
+        // Firebase configuration
         const firebaseConfig = {
   apiKey: "AIzaSyDuKgSUZejLLveOe8oXlHo64OnCDFvwPc4",
   authDomain: "climax-brains-academy-cbt.firebaseapp.com",
@@ -763,7 +764,53 @@
         backToHomeBtn.addEventListener('click', goBackToHome);
 
         // Functions
+        // In exam.html - Add this near the top of the script section
+function checkExamAvailability() {
+    const examAvailabilityRef = database.ref('examAvailability');
+    
+    examAvailabilityRef.once('value').then((snapshot) => {
+        const availability = snapshot.val();
+        
+        // If exams are completely closed
+        if (!availability || !availability.isExamOpen) {
+            registrationForm.innerHTML = `
+                <div class="info-box" style="text-align: center;">
+                    <h3 style="color: var(--secondary-wine);">Exams Not Currently Available</h3>
+                    <p>The exam portal is currently closed. Please check back during the official exam period.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Filter exam types dropdown based on availability
+        const availableExamTypes = availability.availableExamTypes || [];
+        const examTypeSelect = document.getElementById('examType');
+        
+        // Clear existing options
+        examTypeSelect.innerHTML = '<option value="">-- Select Exam Type --</option>';
+        
+        // Add only available exam types
+        if (availableExamTypes.includes('ca')) {
+            examTypeSelect.appendChild(new Option('Continuous Assessment', 'ca'));
+        }
+        if (availableExamTypes.includes('midterm')) {
+            examTypeSelect.appendChild(new Option('Midterm Exam', 'midterm'));
+        }
+        if (availableExamTypes.includes('exam')) {
+            examTypeSelect.appendChild(new Option('End of Term Exam', 'exam'));
+        }
+    });
+        }
         function startExam() {
+    // First verify exams are still open (in case settings changed since page load)
+    const examAvailabilityRef = database.ref('examAvailability');
+    examAvailabilityRef.once('value').then((snapshot) => {
+        const availability = snapshot.val();
+        
+        if (!availability || !availability.isExamOpen) {
+            alert('Exams are no longer available. The portal has been closed by administrators.');
+            return;
+        }
             const name = studentNameInput.value.trim();
             const studentClass = studentClassSelect.value;
             const session = academicSessionSelect.value;
@@ -775,6 +822,14 @@
                 alert('Please fill in all fields');
                 return;
             }
+        }).catch((error) => {
+        console.error("Error verifying exam availability:", error);
+        alert("Error verifying exam status. Please try again.");
+    });
+}
+
+// Call checkExamAvailability when page loads
+document.addEventListener('DOMContentLoaded', checkExamAvailability);
             
             // Save exam details
             examDetails = {
