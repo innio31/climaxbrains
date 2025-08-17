@@ -74,6 +74,16 @@
             padding: 0 20px;
         }
         
+        /* Added style for practice mode heading */
+        .practice-heading {
+            text-align: center;
+            color: var(--primary-purple);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(106, 13, 173, 0.2);
+        }
+        
         /* Form container styles */
         .form-container {
             background: white;
@@ -95,7 +105,7 @@
             color: var(--secondary-wine);
         }
         
-        select {
+        select, input[type="number"] {  /* Added input styling */
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -316,10 +326,12 @@
             <h1>The Climax Brains Academy, Ota</h1>
         </div>
         <h2>CBT Portal</h2>
-        
     </header>
-    <h2>Practice Mode</h2>
+    
     <div class="main-container">
+        <!-- Moved and styled the Practice Mode heading -->
+        <h2 class="practice-heading animate__animated animate__fadeIn">Practice Mode</h2>
+        
         <!-- Selection Form -->
         <div class="form-container animate__animated animate__fadeInUp" id="selectionForm">
             <div class="form-group">
@@ -339,10 +351,17 @@
                 </select>
             </div>
             
+            <!-- Added input for number of questions -->
+            <div class="form-group">
+                <label for="questionCount">Number of Questions (Max 50):</label>
+                <input type="number" id="questionCount" min="1" max="50" value="20">
+            </div>
+            
             <button class="start-btn" id="startPractice">Start Practice Session</button>
             
             <div class="info-box">
-                <p><strong>Note:</strong> Each practice session consists of 30 randomly selected questions with a 30-minute time limit. You'll receive immediate feedback upon completion.</p>
+                <!-- Updated note to reflect dynamic timing -->
+                <p><strong>Note:</strong> Each practice session will have the number of questions you select with a time limit of 45 seconds per question. You'll receive immediate feedback upon completion.</p>
             </div>
         </div>
         
@@ -353,7 +372,7 @@
                     <div id="examTitle"></div>
                     <div id="subjectInfo"></div>
                 </div>
-                <div class="timer" id="timer">30:00</div>
+                <div class="timer" id="timer">00:00</div>
             </div>
             
             <div class="question-container" id="questionContainer">
@@ -479,6 +498,7 @@
         // DOM elements
         const examTypeSelect = document.getElementById('examType');
         const subjectSelect = document.getElementById('subject');
+        const questionCountInput = document.getElementById('questionCount'); // Added
         const startPracticeBtn = document.getElementById('startPractice');
         const selectionForm = document.getElementById('selectionForm');
         const examContainer = document.getElementById('examContainer');
@@ -499,7 +519,7 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let timerInterval;
-        let timeLeft = 30 * 60; // 30 minutes in seconds
+        let timeLeft = 0; // Will be set based on question count
         let currentExamType = '';
         let currentSubject = '';
 
@@ -532,9 +552,15 @@
         function startPracticeSession() {
             currentExamType = examTypeSelect.value;
             currentSubject = subjectSelect.value;
+            const questionCount = parseInt(questionCountInput.value);
             
             if (!currentExamType || !currentSubject) {
                 alert('Please select both exam type and subject');
+                return;
+            }
+            
+            if (isNaN(questionCount) {
+                alert('Please enter a valid number of questions');
                 return;
             }
             
@@ -546,21 +572,35 @@
                 return;
             }
             
-            // Shuffle questions and select first 30 (or all if less than 30)
-currentQuestions = shuffleArray([...allQuestions]).slice(0, 30);
-
-// Shuffle options for each question
-currentQuestions.forEach(question => {
-    if (question.options) {
-        question.options = shuffleArray([...question.options]);
-    }
-});
-
-userAnswers = new Array(currentQuestions.length).fill(null);
+            // Validate question count
+            const maxQuestions = Math.min(allQuestions.length, 50);
+            if (questionCount < 1 || questionCount > maxQuestions) {
+                alert(`Please select between 1 and ${maxQuestions} questions`);
+                return;
+            }
+            
+            // Shuffle questions and select requested number
+            currentQuestions = shuffleArray([...allQuestions]).slice(0, questionCount);
+            
+            // Shuffle options for each question
+            currentQuestions.forEach(question => {
+                if (question.options) {
+                    // Store the correct answer text
+                    const correctAnswerText = question.options[question.answer];
+                    
+                    // Shuffle options
+                    question.options = shuffleArray([...question.options]);
+                    
+                    // Update the answer index to point to the same correct answer
+                    question.answer = question.options.indexOf(correctAnswerText);
+                }
+            });
+            
+            userAnswers = new Array(currentQuestions.length).fill(null);
             
             // Set exam title and info
             examTitle.textContent = `${currentSubject.toUpperCase()} Practice`;
-            subjectInfo.textContent = `${currentExamType.toUpperCase()} Mode`;
+            subjectInfo.textContent = `${currentExamType.toUpperCase()} Mode - ${questionCount} Questions`;
             
             // Hide selection form and show exam container
             selectionForm.style.display = 'none';
@@ -570,7 +610,8 @@ userAnswers = new Array(currentQuestions.length).fill(null);
             currentQuestionIndex = 0;
             displayQuestion();
             
-            // Start timer
+            // Calculate and start timer (45 seconds per question)
+            timeLeft = questionCount * 45;
             startTimer();
         }
 
@@ -637,7 +678,6 @@ userAnswers = new Array(currentQuestions.length).fill(null);
         }
 
         function startTimer() {
-            timeLeft = 30 * 60; // Reset to 30 minutes
             updateTimerDisplay();
             
             timerInterval = setInterval(() => {
@@ -657,7 +697,7 @@ userAnswers = new Array(currentQuestions.length).fill(null);
             timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
             
             // Change color when time is running low
-            if (timeLeft <= 300) { // 5 minutes
+            if (timeLeft <= 60) { // 1 minute
                 timerDisplay.style.backgroundColor = '#e74c3c';
             }
         }
@@ -699,6 +739,7 @@ userAnswers = new Array(currentQuestions.length).fill(null);
             examTypeSelect.value = '';
             subjectSelect.value = '';
             subjectSelect.disabled = true;
+            questionCountInput.value = '20';
         }
 
         function shuffleArray(array) {
