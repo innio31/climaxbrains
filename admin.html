@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <style>
+<style>
     :root {
         --primary-color: #1a5fb4;  /* Blue */
         --secondary-color: #f6d32d;  /* Yellow */
@@ -486,7 +486,7 @@ function loadResults() {
         console.error("Database read failed:", error);
         resultsTable.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-4 text-danger">
+                <td colspan="9" class="text-center py-4 text-danger">
                     Failed to load results. Please check console for details.
                 </td>
             </tr>
@@ -507,7 +507,7 @@ function updateResultsTable(page = 1) {
     if (paginatedResults.length === 0) {
         resultsTable.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-4">No results found matching your criteria</td>
+                <td colspan="9" class="text-center py-4">No results found matching your criteria</td>
             </tr>
         `;
     } else {
@@ -520,7 +520,10 @@ function updateResultsTable(page = 1) {
             const submittedDate = formatDate(result.timestamp);
             
             // Get score class
-            const scoreClass = getScoreClass(result.objectiveScore);
+            const totalScore = result.objectiveScore || 0;
+            const theoryScore = result.theoryScore || 0;
+            const combinedScore = Math.round((totalScore + theoryScore) / 2);
+            const scoreClass = getScoreClass(combinedScore);
             
             row.innerHTML = `
                 <td>${result.name || 'N/A'}</td>
@@ -528,14 +531,24 @@ function updateResultsTable(page = 1) {
                 <td>${result.subject ? capitalizeFirstLetter(result.subject) : 'N/A'}</td>
                 <td>${getExamTypeDisplay(result.examType)}</td>
                 <td>${result.term ? `${result.term} Term` : ''} ${result.session || ''}</td>
-                <td class="${scoreClass}">
-                    ${result.objectiveScore || result.objectiveScore === 0 ? result.objectiveScore + '%' : 'N/A'}
+                <td class="${getScoreClass(totalScore)}">
+                    ${totalScore || totalScore === 0 ? totalScore + '%' : 'N/A'}
                 </td>
-                <td>${submittedDate}</td>
+                <td class="${getScoreClass(theoryScore)}">
+                    ${theoryScore || theoryScore === 0 ? theoryScore + '%' : 'Pending'}
+                </td>
+                <td class="${scoreClass}">
+                    ${combinedScore}%
+                </td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary view-details" data-id="${result.id}">
                         <i class="fas fa-eye"></i>
                     </button>
+                    ${result.theorySubmitted && !result.theoryScore ? 
+                        `<button class="btn btn-sm btn-outline-success add-theory" data-id="${result.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>` : ''
+                    }
                 </td>
             `;
             resultsTable.appendChild(row);
@@ -545,10 +558,95 @@ function updateResultsTable(page = 1) {
         document.querySelectorAll('.view-details').forEach(btn => {
             btn.addEventListener('click', () => viewResultDetails(btn.dataset.id));
         });
+        
+        // Add event listeners to add theory buttons
+        document.querySelectorAll('.add-theory').forEach(btn => {
+            btn.addEventListener('click', () => showTheoryScoreModal(btn.dataset.id));
+        });
     }
     
     // Update pagination
     updatePagination();
+}
+
+// Show modal for adding theory score
+function showTheoryScoreModal(resultId) {
+    const result = allResults.find(r => r.id === resultId);
+    if (!result) return;
+    
+    const modalHTML = `
+        <div class="modal fade" id="theoryScoreModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Theory Score</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Student:</strong> ${result.name}</p>
+                        <p><strong>Subject:</strong> ${capitalizeFirstLetter(result.subject)}</p>
+                        <p><strong>Exam Type:</strong> ${getExamTypeText(result.examType)}</p>
+                        
+                        <div class="mb-3">
+                            <label for="theoryScoreInput" class="form-label">Theory Score (0-100)</label>
+                            <input type="number" class="form-control" id="theoryScoreInput" min="0" max="100">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="saveTheoryScore">Save Score</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to DOM
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHTML;
+    document.body.appendChild(modalContainer);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('theoryScoreModal'));
+    modal.show();
+    
+    // Save score handler
+    document.getElementById('saveTheoryScore').addEventListener('click', () => {
+        const theoryScore = parseInt(document.getElementById('theoryScoreInput').value);
+        
+        if (isNaN(theoryScore) {
+            showAlert('danger', 'Please enter a valid score');
+            return;
+        }
+        
+        if (theoryScore < 0 || theoryScore > 100) {
+            showAlert('danger', 'Score must be between 0 and 100');
+            return;
+        }
+        
+        // Update in Firebase
+        const resultRef = database.ref(`examResults/${resultId}`);
+        resultRef.update({
+            theoryScore: theoryScore,
+            lastUpdated: new Date().toISOString()
+        })
+        .then(() => {
+            showAlert('success', 'Theory score saved successfully');
+            modal.hide();
+            setTimeout(() => {
+                modalContainer.remove();
+            }, 500);
+        })
+        .catch(error => {
+            console.error('Error saving theory score:', error);
+            showAlert('danger', 'Failed to save theory score');
+        });
+    });
+    
+    // Remove modal when hidden
+    document.getElementById('theoryScoreModal').addEventListener('hidden.bs.modal', () => {
+        modalContainer.remove();
+    });
 }
 
 // View detailed result
@@ -558,6 +656,11 @@ function viewResultDetails(resultId) {
     
     const modal = new bootstrap.Modal(document.getElementById('resultModal'));
     const detailsContainer = document.getElementById('resultDetails');
+    
+    // Calculate combined score
+    const totalScore = result.objectiveScore || 0;
+    const theoryScore = result.theoryScore || 0;
+    const combinedScore = Math.round((totalScore + theoryScore) / 2);
     
     // Format the details HTML
     detailsContainer.innerHTML = `
@@ -576,7 +679,7 @@ function viewResultDetails(resultId) {
         </div>
         
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="card mb-3">
                     <div class="card-header bg-primary text-white">
                         Objective Section
@@ -589,13 +692,40 @@ function viewResultDetails(resultId) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="card mb-3">
-                    <div class="card-header ${result.theorySubmitted ? 'bg-success text-white' : 'bg-secondary text-white'}">
+                    <div class="card-header ${result.theoryScore !== undefined ? 'bg-success text-white' : result.theorySubmitted ? 'bg-warning text-dark' : 'bg-secondary text-white'}">
                         Theory Section
                     </div>
                     <div class="card-body">
-                        <p class="card-text">${result.theorySubmitted ? 'Submitted for grading' : 'Not submitted'}</p>
+                        ${result.theoryScore !== undefined ? `
+                            <h3 class="${getScoreClass(result.theoryScore)}">
+                                ${result.theoryScore}%
+                            </h3>
+                            <p class="card-text">Manually graded</p>
+                        ` : result.theorySubmitted ? `
+                            <p class="card-text">Submitted for grading</p>
+                        ` : `
+                            <p class="card-text">Not submitted</p>
+                        `}
+                        ${result.theorySubmitted && result.theoryScore === undefined ? `
+                            <button class="btn btn-sm btn-primary mt-2" id="addTheoryScoreBtn">
+                                <i class="fas fa-edit me-1"></i> Add Score
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        Combined Score
+                    </div>
+                    <div class="card-body">
+                        <h3 class="${getScoreClass(combinedScore)}">
+                            ${combinedScore}%
+                        </h3>
+                        <p class="card-text">Average of objective and theory</p>
                     </div>
                 </div>
             </div>
@@ -623,6 +753,16 @@ function viewResultDetails(resultId) {
         </div>
         ` : ''}
     `;
+    
+    // Add event listener to add theory score button in modal
+    if (result.theorySubmitted && result.theoryScore === undefined) {
+        document.getElementById('addTheoryScoreBtn').addEventListener('click', () => {
+            modal.hide();
+            setTimeout(() => {
+                showTheoryScoreModal(resultId);
+            }, 500);
+        });
+    }
     
     modal.show();
 }
@@ -801,7 +941,7 @@ function previewTermReport() {
         });
 }
 
-// // Calculate term totals for all students
+// Calculate term totals for all students
 function calculateTermTotals(classVal, termVal, sessionVal, caWeight, midtermWeight, examWeight) {
     return new Promise((resolve, reject) => {
         const resultsRef = database.ref('examResults');
@@ -846,17 +986,27 @@ function calculateTermTotals(classVal, termVal, sessionVal, caWeight, midtermWei
                             name: result.subject,
                             caScores: [],
                             midtermScores: [],
-                            examScores: []
+                            examScores: [],
+                            theoryScores: []
                         };
                     }
                     
                     // Categorize scores by exam type
                     if (result.examType === 'ca') {
-                        studentData[studentKey].subjects[subjectKey].caScores.push(result.objectiveScore);
+                        studentData[studentKey].subjects[subjectKey].caScores.push({
+                            objective: result.objectiveScore,
+                            theory: result.theoryScore
+                        });
                     } else if (result.examType === 'midterm') {
-                        studentData[studentKey].subjects[subjectKey].midtermScores.push(result.objectiveScore);
+                        studentData[studentKey].subjects[subjectKey].midtermScores.push({
+                            objective: result.objectiveScore,
+                            theory: result.theoryScore
+                        });
                     } else if (result.examType === 'exam') {
-                        studentData[studentKey].subjects[subjectKey].examScores.push(result.objectiveScore);
+                        studentData[studentKey].subjects[subjectKey].examScores.push({
+                            objective: result.objectiveScore,
+                            theory: result.theoryScore
+                        });
                     }
                 });
                 
@@ -866,22 +1016,31 @@ function calculateTermTotals(classVal, termVal, sessionVal, caWeight, midtermWei
                     
                     Object.entries(student.subjects).forEach(([subjectKey, subjectData]) => {
                         // Calculate CA total (sum of all CA scores scaled to 10)
-                        const caSum = subjectData.caScores.length > 0 ? 
-                            subjectData.caScores.reduce((a, b) => a + b, 0) : 0;
-                        // Scale to 10 (sum of all CA scores / number of CAs * 10)
-                        const caTotal = subjectData.caScores.length > 0 ?
-                            (caSum / (subjectData.caScores.length * 100)) * 10 : 0;
+                        const caObjectiveSum = subjectData.caScores.reduce((sum, score) => sum + (score.objective || 0), 0);
+                        const caTheorySum = subjectData.caScores.reduce((sum, score) => sum + (score.theory || 0), 0);
+                        const caCount = subjectData.caScores.length;
+                        
+                        // Scale to 10 (average of all CAs scaled to 10)
+                        const caObjectiveTotal = caCount > 0 ? (caObjectiveSum / (caCount * 100)) * 10 : 0;
+                        const caTheoryTotal = caCount > 0 ? (caTheorySum / (caCount * 100)) * 10 : 0;
+                        const caTotal = (caObjectiveTotal + caTheoryTotal) / 2;
                         
                         // Calculate Midterm total (sum of all Midterm scores scaled to 20)
-                        const midtermSum = subjectData.midtermScores.length > 0 ? 
-                            subjectData.midtermScores.reduce((a, b) => a + b, 0) : 0;
-                        // Scale to 20 (sum of all Midterm scores / number of Midterms * 20)
-                        const midtermTotal = subjectData.midtermScores.length > 0 ?
-                            (midtermSum / (subjectData.midtermScores.length * 100)) * 20 : 0;
+                        const midtermObjectiveSum = subjectData.midtermScores.reduce((sum, score) => sum + (score.objective || 0), 0);
+                        const midtermTheorySum = subjectData.midtermScores.reduce((sum, score) => sum + (score.theory || 0), 0);
+                        const midtermCount = subjectData.midtermScores.length;
+                        
+                        // Scale to 20 (average of all Midterms scaled to 20)
+                        const midtermObjectiveTotal = midtermCount > 0 ? (midtermObjectiveSum / (midtermCount * 100)) * 20 : 0;
+                        const midtermTheoryTotal = midtermCount > 0 ? (midtermTheorySum / (midtermCount * 100)) * 20 : 0;
+                        const midtermTotal = (midtermObjectiveTotal + midtermTheoryTotal) / 2;
                         
                         // Calculate Exam total (single exam score scaled to 70)
-                        const examTotal = subjectData.examScores.length > 0 ?
-                            (subjectData.examScores[0] / 100) * 70 : 0;
+                        const examObjective = subjectData.examScores[0]?.objective || 0;
+                        const examTheory = subjectData.examScores[0]?.theory || 0;
+                        const examObjectiveTotal = (examObjective / 100) * 70;
+                        const examTheoryTotal = (examTheory / 100) * 70;
+                        const examTotal = (examObjectiveTotal + examTheoryTotal) / 2;
                         
                         // Calculate subject total (sum of scaled scores)
                         const subjectTotal = caTotal + midtermTotal + examTotal;
@@ -889,10 +1048,8 @@ function calculateTermTotals(classVal, termVal, sessionVal, caWeight, midtermWei
                         subjects[subjectKey] = {
                             name: subjectData.name,
                             caScores: subjectData.caScores,
-                            caSum: caSum,
                             caTotal: caTotal,
                             midtermScores: subjectData.midtermScores,
-                            midtermSum: midtermSum,
                             midtermTotal: midtermTotal,
                             examScores: subjectData.examScores,
                             examTotal: examTotal,
@@ -968,12 +1125,10 @@ function renderReportPreview(data, classVal, termVal, sessionVal) {
         thead.innerHTML = `
             <tr>
                 <th>Subject</th>
-                <th>CA Scores</th>
-                <th>CA Total</th>
-                <th>Midterm Scores</th>
-                <th>Midterm Total</th>
-                <th>Exam Score</th>
-                <th>Subject Total</th>
+                <th>CA (10)</th>
+                <th>Midterm (20)</th>
+                <th>Exam (70)</th>
+                <th>Total (100)</th>
                 <th>Grade</th>
             </tr>
         `;
@@ -985,22 +1140,15 @@ function renderReportPreview(data, classVal, termVal, sessionVal) {
         Object.values(student.subjects).forEach(subject => {
             const row = document.createElement('tr');
             
-            // Helper function to format scores array
-            const formatScores = (scores) => {
-                return scores.length > 0 ? scores.map(s => Math.round(s)).join(', ') : '-';
-            };
-            
             // Calculate grade
             const grade = calculateGrade(subject.subjectTotal);
             
             row.innerHTML = `
                 <td>${capitalizeFirstLetter(subject.name)}</td>
-                <td>${formatScores(subject.caScores)}</td>
-                <td>${subject.caScores.length > 0 ? Math.round(subject.caTotal * 10) / 10 : '0'}/10</td>
-                <td>${formatScores(subject.midtermScores)}</td>
-                <td>${subject.midtermScores.length > 0 ? Math.round(subject.midtermTotal * 10) / 10 : '0'}/20</td>
-                <td>${subject.examScores.length > 0 ? Math.round(subject.examScores[0]) + '%' : '-'}</td>
-                <td>${Math.round(subject.subjectTotal)}%</td>
+                <td>${subject.caTotal.toFixed(1)}</td>
+                <td>${subject.midtermTotal.toFixed(1)}</td>
+                <td>${subject.examTotal.toFixed(1)}</td>
+                <td>${subject.subjectTotal.toFixed(1)}</td>
                 <td>${grade}</td>
             `;
             tbody.appendChild(row);
@@ -1010,8 +1158,8 @@ function renderReportPreview(data, classVal, termVal, sessionVal) {
         const footerRow = document.createElement('tr');
         footerRow.className = 'table-active';
         footerRow.innerHTML = `
-            <td colspan="6" class="text-end"><strong>Overall Average:</strong></td>
-            <td><strong>${Math.round(student.overallAverage)}%</strong></td>
+            <td colspan="4" class="text-end"><strong>Overall Average:</strong></td>
+            <td><strong>${student.overallAverage.toFixed(1)}</strong></td>
             <td><strong>${calculateGrade(student.overallAverage)}</strong></td>
         `;
         tbody.appendChild(footerRow);
@@ -1043,7 +1191,7 @@ function generateTermReportPdf() {
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0); // Black color
     doc.text(`${currentReportData.term.toUpperCase()} TERM ${currentReportData.session} | ${currentReportData.class.toUpperCase()}`, 105, 30, { align: 'center' });
-    doc.text(`CA: ${currentReportData.weights.ca}% | Midterm: ${currentReportData.weights.midterm}% | Exam: ${currentReportData.weights.exam}%`, 105, 37, { align: 'center' });
+    doc.text(`CA: ${currentReportData.weights.ca}% (over 10) | Midterm: ${currentReportData.weights.midterm}% (over 20) | Exam: ${currentReportData.weights.exam}% (over 70)`, 105, 37, { align: 'center' });
     
     // Add student tables
     let yPosition = 45;
@@ -1061,37 +1209,30 @@ function generateTermReportPdf() {
         const tableData = [];
         
         Object.values(student.subjects).forEach(subject => {
-            // Helper function to format scores array
-            const formatScores = (scores) => {
-                return scores.length > 0 ? scores.map(s => Math.round(s)).join(', ') : '-';
-            };
-            
             // Calculate grade
             const grade = calculateGrade(subject.subjectTotal);
             
             tableData.push([
                 capitalizeFirstLetter(subject.name),
-                formatScores(subject.caScores),
-                `${Math.round(subject.caAverage)}%`,
-                formatScores(subject.midtermScores),
-                `${Math.round(subject.midtermAverage)}%`,
-                subject.examScores.length > 0 ? `${Math.round(subject.examScores[0])}%` : '-',
-                `${Math.round(subject.subjectTotal)}%`,
+                subject.caTotal.toFixed(1),
+                subject.midtermTotal.toFixed(1),
+                subject.examTotal.toFixed(1),
+                subject.subjectTotal.toFixed(1),
                 grade
             ]);
         });
         
         // Add overall average row
         tableData.push([
-            { content: 'Overall Average:', colSpan: 6, styles: { halign: 'right', fontStyle: 'bold' } },
-            { content: `${Math.round(student.overallAverage)}%`, styles: { fontStyle: 'bold' } },
+            { content: 'Overall Average:', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+            { content: student.overallAverage.toFixed(1), styles: { fontStyle: 'bold' } },
             { content: calculateGrade(student.overallAverage), styles: { fontStyle: 'bold' } }
         ]);
         
         // Add table to PDF
         doc.autoTable({
             startY: yPosition,
-            head: [['Subject', 'CA Scores', 'CA Avg', 'Midterm Scores', 'Midterm Avg', 'Exam Score', 'Total', 'Grade']],
+            head: [['Subject', 'CA (10)', 'Midterm (20)', 'Exam (70)', 'Total (100)', 'Grade']],
             body: tableData,
             margin: { left: 10, right: 10 },
             styles: { fontSize: 9 },
@@ -1148,7 +1289,9 @@ function updatePerformanceChart() {
         }
         
         if (result.objectiveScore) {
-            performanceData[result.class][result.subject].total += result.objectiveScore;
+            const theoryScore = result.theoryScore || 0;
+            const combinedScore = (result.objectiveScore + theoryScore) / 2;
+            performanceData[result.class][result.subject].total += combinedScore;
             performanceData[result.class][result.subject].count++;
         }
     });
@@ -1218,11 +1361,14 @@ function updateScoreDistributionChart() {
     
     filteredResults.forEach(result => {
         if (result.objectiveScore) {
-            if (result.objectiveScore >= 90) scoreRanges['90-100']++;
-            else if (result.objectiveScore >= 80) scoreRanges['80-89']++;
-            else if (result.objectiveScore >= 70) scoreRanges['70-79']++;
-            else if (result.objectiveScore >= 60) scoreRanges['60-69']++;
-            else if (result.objectiveScore >= 50) scoreRanges['50-59']++;
+            const theoryScore = result.theoryScore || 0;
+            const combinedScore = Math.round((result.objectiveScore + theoryScore) / 2);
+            
+            if (combinedScore >= 90) scoreRanges['90-100']++;
+            else if (combinedScore >= 80) scoreRanges['80-89']++;
+            else if (combinedScore >= 70) scoreRanges['70-79']++;
+            else if (combinedScore >= 60) scoreRanges['60-69']++;
+            else if (combinedScore >= 50) scoreRanges['50-59']++;
             else scoreRanges['Below 50']++;
         }
     });
@@ -1285,7 +1431,9 @@ function updateTrendsChart() {
     filteredResults.forEach(result => {
         const resultDate = new Date(result.timestamp).toISOString().split('T')[0];
         if (dailyAverages[resultDate] && result.objectiveScore) {
-            dailyAverages[resultDate].total += result.objectiveScore;
+            const theoryScore = result.theoryScore || 0;
+            const combinedScore = (result.objectiveScore + theoryScore) / 2;
+            dailyAverages[resultDate].total += combinedScore;
             dailyAverages[resultDate].count++;
         }
     });
@@ -1343,6 +1491,10 @@ function exportToExcel() {
     
     // Prepare data for export
     const exportData = filteredResults.map(result => {
+        const theoryScore = result.theoryScore || 'Pending';
+        const combinedScore = result.objectiveScore && result.theoryScore ? 
+            Math.round((result.objectiveScore + result.theoryScore) / 2) : 'N/A';
+            
         return {
             'Student Name': result.name || '',
             'Class': result.class ? result.class.toUpperCase() : '',
@@ -1350,8 +1502,9 @@ function exportToExcel() {
             'Exam Type': getExamTypeText(result.examType),
             'Term': result.term || '',
             'Session': result.session || '',
-            'Score (%)': result.objectiveScore || '',
-            'Theory Submitted': result.theorySubmitted ? 'Yes' : 'No',
+            'Objective Score (%)': result.objectiveScore || '',
+            'Theory Score (%)': theoryScore,
+            'Combined Score (%)': combinedScore,
             'Date Submitted': formatDate(result.timestamp)
         };
     });
@@ -1497,7 +1650,3 @@ function calculateGrade(score) {
     </script>
 </body>
 </html>
-
-
-
-
