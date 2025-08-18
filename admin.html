@@ -800,7 +800,7 @@ function previewTermReport() {
         });
 }
 
-// Calculate term totals for all students
+// // Calculate term totals for all students
 function calculateTermTotals(classVal, termVal, sessionVal, caWeight, midtermWeight, examWeight) {
     return new Promise((resolve, reject) => {
         const resultsRef = database.ref('examResults');
@@ -864,34 +864,36 @@ function calculateTermTotals(classVal, termVal, sessionVal, caWeight, midtermWei
                     const subjects = {};
                     
                     Object.entries(student.subjects).forEach(([subjectKey, subjectData]) => {
-                        // Calculate CA average (over the provided weight)
-                        const caAvg = subjectData.caScores.length > 0 ? 
-                            (subjectData.caScores.reduce((a, b) => a + b, 0) / subjectData.caScores.length) : 0;
-                        const caTotal = (caAvg * caWeight) / 100;
+                        // Calculate CA total (sum of all CA scores scaled to 10)
+                        const caSum = subjectData.caScores.length > 0 ? 
+                            subjectData.caScores.reduce((a, b) => a + b, 0) : 0;
+                        // Scale to 10 (sum of all CA scores / number of CAs * 10)
+                        const caTotal = subjectData.caScores.length > 0 ?
+                            (caSum / (subjectData.caScores.length * 100)) * 10 : 0;
                         
-                        // Calculate Midterm average (over the provided weight)
-                        const midtermAvg = subjectData.midtermScores.length > 0 ? 
-                            (subjectData.midtermScores.reduce((a, b) => a + b, 0) / subjectData.midtermScores.length) : 0;
-                        const midtermTotal = (midtermAvg * midtermWeight) / 100;
+                        // Calculate Midterm total (sum of all Midterm scores scaled to 20)
+                        const midtermSum = subjectData.midtermScores.length > 0 ? 
+                            subjectData.midtermScores.reduce((a, b) => a + b, 0) : 0;
+                        // Scale to 20 (sum of all Midterm scores / number of Midterms * 20)
+                        const midtermTotal = subjectData.midtermScores.length > 0 ?
+                            (midtermSum / (subjectData.midtermScores.length * 100)) * 20 : 0;
                         
-                        // Calculate Exam average (over the provided weight)
-                        const examAvg = subjectData.examScores.length > 0 ? 
-                            subjectData.examScores[0] : 0; // Assuming only one exam per term
-                        const examTotal = (examAvg * examWeight) / 100;
+                        // Calculate Exam total (single exam score scaled to 70)
+                        const examTotal = subjectData.examScores.length > 0 ?
+                            (subjectData.examScores[0] / 100) * 70 : 0;
                         
-                        // Calculate subject total
+                        // Calculate subject total (sum of scaled scores)
                         const subjectTotal = caTotal + midtermTotal + examTotal;
                         
                         subjects[subjectKey] = {
                             name: subjectData.name,
                             caScores: subjectData.caScores,
-                            caAverage: caAvg,
+                            caSum: caSum,
                             caTotal: caTotal,
                             midtermScores: subjectData.midtermScores,
-                            midtermAverage: midtermAvg,
+                            midtermSum: midtermSum,
                             midtermTotal: midtermTotal,
                             examScores: subjectData.examScores,
-                            examAverage: examAvg,
                             examTotal: examTotal,
                             subjectTotal: subjectTotal
                         };
@@ -900,7 +902,7 @@ function calculateTermTotals(classVal, termVal, sessionVal, caWeight, midtermWei
                     // Calculate overall average
                     const subjectTotals = Object.values(subjects).map(s => s.subjectTotal);
                     const overallAverage = subjectTotals.length > 0 ? 
-                        (subjectTotals.reduce((a, b) => a + b, 0) / subjectTotals.length) : 0;
+                        subjectTotals.reduce((a, b) => a + b, 0) / subjectTotals.length : 0;
                     
                     return {
                         ...student,
@@ -942,7 +944,7 @@ function renderReportPreview(data, classVal, termVal, sessionVal) {
         <h3>Climax Brains Academy</h3>
         <h4>Term Report Sheet</h4>
         <p>${termVal.toUpperCase()} TERM ${sessionVal} | ${classVal.toUpperCase()}</p>
-        <p>CA: ${data.weights.ca}% | Midterm: ${data.weights.midterm}% | Exam: ${data.weights.exam}%</p>
+        <p>CA: ${data.weights.ca}% (over 10) | Midterm: ${data.weights.midterm}% (over 20) | Exam: ${data.weights.exam}% (over 70)</p>
         <hr>
     `;
     previewContent.appendChild(header);
@@ -966,11 +968,11 @@ function renderReportPreview(data, classVal, termVal, sessionVal) {
             <tr>
                 <th>Subject</th>
                 <th>CA Scores</th>
-                <th>CA Avg</th>
+                <th>CA Total</th>
                 <th>Midterm Scores</th>
-                <th>Midterm Avg</th>
+                <th>Midterm Total</th>
                 <th>Exam Score</th>
-                <th>Total</th>
+                <th>Subject Total</th>
                 <th>Grade</th>
             </tr>
         `;
@@ -993,9 +995,9 @@ function renderReportPreview(data, classVal, termVal, sessionVal) {
             row.innerHTML = `
                 <td>${capitalizeFirstLetter(subject.name)}</td>
                 <td>${formatScores(subject.caScores)}</td>
-                <td>${Math.round(subject.caAverage)}%</td>
+                <td>${subject.caScores.length > 0 ? Math.round(subject.caTotal * 10) / 10 : '0'}/10</td>
                 <td>${formatScores(subject.midtermScores)}</td>
-                <td>${Math.round(subject.midtermAverage)}%</td>
+                <td>${subject.midtermScores.length > 0 ? Math.round(subject.midtermTotal * 10) / 10 : '0'}/20</td>
                 <td>${subject.examScores.length > 0 ? Math.round(subject.examScores[0]) + '%' : '-'}</td>
                 <td>${Math.round(subject.subjectTotal)}%</td>
                 <td>${grade}</td>
@@ -1494,7 +1496,6 @@ function calculateGrade(score) {
     </script>
 </body>
 </html>
-
 
 
 
