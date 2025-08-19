@@ -1191,43 +1191,53 @@
         }
 
         function submitExam() {
-            clearInterval(timerInterval);
-            
-            // Calculate objective score
-            let correct = 0;
-            userAnswers.forEach((answer, index) => {
-                if (answer === currentQuestions[index]?.answer) {
-                    correct++;
-                }
-            });
-            
-            const objectiveScore = Math.round((correct / currentQuestions.length) * 100);
-            
-            // Prepare exam results
-            const examResults = {
-                ...examDetails,
-                objectiveScore,
-                theorySubmitted: currentTheoryQuestions.length > 0,
-                theoryScore: null, // To be added by teacher later
-                answers: userAnswers,
-                submittedAt: new Date().toISOString()
-            };
-            
-            // Save to Firebase
-            const resultsRef = database.ref('examResults');
-            resultsRef.push(examResults)
-                .then(() => {
-                    // Show results
-                    confirmationContainer.style.display = 'none';
-                    resultContainer.style.display = 'block';
-                    scoreValue.textContent = objectiveScore;
-                })
-                .catch(error => {
-                    console.error('Error saving exam results:', error);
-                    alert('There was an error submitting your exam. Please try again.');
-                    hideConfirmation();
-                });
+    clearInterval(timerInterval);
+    
+    // Calculate objective score
+    let correct = 0;
+    userAnswers.forEach((answer, index) => {
+        if (answer === currentQuestions[index]?.answer) {
+            correct++;
         }
+    });
+    
+    const objectiveScore = Math.round((correct / currentQuestions.length) * 100);
+    
+    // Prepare exam results with complete structure
+    const examResults = {
+        name: examDetails.name,
+        class: examDetails.class,
+        examType: examDetails.examType,
+        subject: examDetails.subject,
+        term: examDetails.term,
+        session: examDetails.session,
+        objectiveScore: objectiveScore,
+        theorySubmitted: currentTheoryQuestions.length > 0,
+        theoryScore: null, // To be added by teacher later
+        totalScore: objectiveScore, // Initial total score (will be updated when theory is graded)
+        answers: userAnswers,
+        submittedAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
+    };
+    
+    // Remove the duplicate timestamp if it exists in examDetails
+    delete examResults.timestamp;
+    
+    // Save to Firebase
+    const resultsRef = database.ref('examResults');
+    resultsRef.push(examResults)
+        .then(() => {
+            // Show results
+            confirmationContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+            scoreValue.textContent = objectiveScore;
+        })
+        .catch(error => {
+            console.error('Error saving exam results:', error);
+            alert('There was an error submitting your exam. Please try again.');
+            hideConfirmation();
+        });
+}
 
         function goBackToHome() {
             window.location.href = 'index.html';
